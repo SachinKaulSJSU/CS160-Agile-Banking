@@ -5,6 +5,11 @@ Setup:
 # setup venv
 python -m venv venv
 source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+
+# mac users use homebrew to
+brew install mysql pkg-config
+
+# then install requirements for mac users
 pip install -r requirements.txt
 
 ```
