@@ -14,7 +14,7 @@ Python virtual environment:
 # activate
 venv\Scripts\activate
 #or for mac
-source venv/Scripts/activate
+source venv/bin/activate
 
 #deactivate
 deactivate
