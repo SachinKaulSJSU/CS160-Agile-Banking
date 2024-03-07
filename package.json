@@ -3,8 +3,8 @@
     "version": "0.1.0",
     "description": "Online banking application",
     "scripts": {
-        "backend:auth": "python backend/auth_gateway/manage.py runserver",
-        "backend:user": "python backend/user_service/manage.py runserver",
+        "backend:auth": "python backend/auth_gateway/manage.py runserver 8000",
+        "backend:user": "python backend/user_service/manage.py runserver 8001",
         "frontend": "npm run dev --prefix frontend",
         "dev": "concurrently \"npm run backend:auth\" \"npm run backend:user\" \"npm run frontend\""
     },
