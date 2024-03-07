@@ -4,6 +4,8 @@ First activate the Python virtual environment:
 ```bash
 # activate
 venv\Scripts\activate
+#or
+source venv/Scripts/activate
 
 #deactivate
 deactivate
