@@ -1,10 +1,19 @@
 ## Getting Started
 
-First activate the Python virtual environment:
+Setup:
+```bash
+# setup venv
+python -m venv venv
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+pip install -r requirements.txt
+
+```
+
+Python virtual environment:
 ```bash
 # activate
 venv\Scripts\activate
-#or
+#or for mac
 source venv/Scripts/activate
 
 #deactivate
