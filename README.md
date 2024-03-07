@@ -1,6 +1,4 @@
-## Getting Started
-
-Setup:
+## Initial Setup:
 ```bash
 # setup venv
 python -m venv venv
@@ -9,11 +7,23 @@ source venv/bin/activate  # On Windows: .\venv\Scripts\activate
 # mac users install mysql pkg-config prior to installing requirements
 brew install mysql pkg-config
 
+# install dependencies
 pip install -r requirements.txt
 
 ```
 
-Python virtual environment:
+Setup MYSQL database for dev environment:
+```bash
+# create a .env for the db
+MYSQL_HOST='localhost'
+MYSQL_USER='root'
+MYSQL_PASSWORD='yourpassword'
+MYSQL_DATABASE='dbname'
+MYSQL_PORT='3306'
+```
+
+## Basic Commands:
+Run Python virtual environment:
 ```bash
 # activate
 venv\Scripts\activate
@@ -35,3 +45,4 @@ pnpm dev
 # or
 bun dev
 ```
+
