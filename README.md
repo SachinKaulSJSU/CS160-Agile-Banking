@@ -1,4 +1,5 @@
 ## Initial Setup:
+Setup virtual environment with dependencies
 ```bash
 # setup venv
 python -m venv venv
