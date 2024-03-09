@@ -21,7 +21,7 @@ export default function HeroCard() {
               <div className="relative col-span-full">
                 <div>
                   <input
-                    className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-gray-300 focus:ring-gray-300 disabled:opacity-50 disabled:pointer-events-none bg-gray-100 border-gray-700 text-gray-600 focus:ring-gray-600                      focus:pt-6                      focus:pb-2                      [&:not(:placeholder-shown)]:pt-6                      [&:not(:placeholder-shown)]:pb-2                      autofill:pt-6                      autofill:pb-2"
+                    className="peer p-4 px-10 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-gray-300 focus:ring-gray-300 disabled:opacity-50 disabled:pointer-events-none bg-gray-100 border-gray-700 text-gray-600 focus:ring-gray-600                      focus:pt-6                      focus:pb-2                      [&:not(:placeholder-shown)]:pt-6                      [&:not(:placeholder-shown)]:pb-2                      autofill:pt-6                      autofill:pb-2"
                     id="hero-login-form-floating-input-username"
                     placeholder="username"
                     type="text"
@@ -61,7 +61,7 @@ export default function HeroCard() {
 
               <a
                 className="button w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-transparent text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none"
-                href="#"
+                href="/enroll"
               >
                 Enroll
               </a>

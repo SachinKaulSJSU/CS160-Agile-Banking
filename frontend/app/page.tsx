@@ -1,5 +1,4 @@
 import Header from './components/header'
-import OfferSection from './components/offer'
 import HeroSection from './components/hero'
 import Footer from './components/footer'
 

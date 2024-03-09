@@ -6,8 +6,8 @@ export default function Header() {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
+          <a href="/" className="-m-1.5 p-1.5">
+            <span className="sr-only">Agile Bank</span>
             <img
               className="h-8 w-auto"
               src="/agile_logo_v1.png"
@@ -28,7 +28,7 @@ export default function Header() {
           </a>
         </div>
         <div className="lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+          <a href="/login" className="text-sm font-semibold leading-6 text-gray-900">
             Log in <span aria-hidden="true">&rarr;</span>
           </a>
         </div>
