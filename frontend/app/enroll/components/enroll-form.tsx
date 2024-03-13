@@ -1,48 +1,118 @@
+"use client";
+import { useState, FormEvent, ChangeEvent } from "react";
+
 export default function EnrollForm() {
+  const [FormData, setFormData] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    country: "",
+    streetAddress: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (FormData.password !== FormData.confirmPassword) {
+      console.error("Passwords do not match");
+    } else {
+      console.log("works lol");
+    }
+  };
+
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <div className="border-b border-gray-900/10 pb-12 px-10">
-        <div className="sm:col-span-4">
-          <label
-            className="block text-sm font-medium leading-6 text-gray-900"
-            htmlFor="username"
-          >
-            Username
-          </label>
-          <div className="mt-2">
-            <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-              <input
-                autoComplete="username"
-                className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                id="username"
-                name="username"
-                type="text"
-              />
+        <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+          <div className="sm:col-span-4">
+            <label
+              className="block text-sm font-medium leading-6 text-gray-900"
+              htmlFor="username"
+            >
+              Username
+            </label>
+            <div className="mt-2">
+              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                <input
+                  autoComplete="username"
+                  className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  id="username"
+                  name="username"
+                  value={FormData.username}
+                  type="text"
+                  onChange={onChange}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="sm:col-span-3">
+            <label
+              className="block text-sm font-medium leading-6 text-gray-900"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <div className="mt-2">
+              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                <input
+                  autoComplete="password"
+                  className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  id="password"
+                  name="password"
+                  value={FormData.password}
+                  type="password"
+                  onChange={onChange}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="sm:col-span-3">
+            <label
+              className="block text-sm font-medium leading-6 text-gray-900"
+              htmlFor="confirmPassword"
+            >
+              Confirm Password
+            </label>
+            <div className="mt-2">
+              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                <input
+                  autoComplete="confirmPassword"
+                  className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={FormData.confirmPassword}
+                  type="password"
+                  onChange={onChange}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="sm:col-span-4">
-          <label
-            className="block text-sm font-medium leading-6 text-gray-900"
-            htmlFor="username"
-          >
-            Password
-          </label>
-          <div className="mt-2">
-            <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-              <input
-                autoComplete="username"
-                className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                id="username"
-                name="username"
-                type="text"
-              />
-            </div>
-          </div>
-        </div>
-
-        <h2 className="text-base font-semibold leading-7 text-gray-900">
+        <h2 className="text-base font-semibold leading-7 text-gray-900 mt-6">
           Personal Information
         </h2>
         <p className="mt-1 text-sm leading-6 text-gray-600">
@@ -52,7 +122,7 @@ export default function EnrollForm() {
           <div className="sm:col-span-3">
             <label
               className="block text-sm font-medium leading-6 text-gray-900"
-              htmlFor="first-name"
+              htmlFor="firstName"
             >
               First name
             </label>
@@ -60,16 +130,18 @@ export default function EnrollForm() {
               <input
                 autoComplete="given-name"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                id="first-name"
-                name="first-name"
+                id="firstName"
+                name="firstName"
+                value={FormData.firstName}
                 type="text"
+                onChange={onChange}
               />
             </div>
           </div>
           <div className="sm:col-span-3">
             <label
               className="block text-sm font-medium leading-6 text-gray-900"
-              htmlFor="last-name"
+              htmlFor="lastName"
             >
               Last name
             </label>
@@ -77,9 +149,11 @@ export default function EnrollForm() {
               <input
                 autoComplete="family-name"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                id="last-name"
-                name="last-name"
+                id="lastName"
+                name="lastName"
+                value={FormData.lastName}
                 type="text"
+                onChange={onChange}
               />
             </div>
           </div>
@@ -96,7 +170,28 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="email"
                 name="email"
+                value={FormData.email}
                 type="email"
+                onChange={onChange}
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-3">
+            <label
+              className="block text-sm font-medium leading-6 text-gray-900"
+              htmlFor="phone"
+            >
+              Phone Number
+            </label>
+            <div className="mt-2">
+              <input
+                autoComplete="phone"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                id="phone"
+                name="phone"
+                value={FormData.phone}
+                type="text"
+                onChange={onChange}
               />
             </div>
           </div>
@@ -110,9 +205,11 @@ export default function EnrollForm() {
             <div className="mt-2">
               <select
                 autoComplete="country-name"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:max-w-xs sm:text-sm sm:leading-6"
                 id="country"
+                value={FormData.country}
                 name="country"
+                onChange={onSelectChange}
               >
                 <option>United States</option>
                 <option>Canada</option>
@@ -123,7 +220,7 @@ export default function EnrollForm() {
           <div className="col-span-full">
             <label
               className="block text-sm font-medium leading-6 text-gray-900"
-              htmlFor="street-address"
+              htmlFor="streetAddress"
             >
               Street address
             </label>
@@ -131,9 +228,11 @@ export default function EnrollForm() {
               <input
                 autoComplete="street-address"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                id="street-address"
-                name="street-address"
+                id="streetAddress"
+                name="streetAddress"
+                value={FormData.streetAddress}
                 type="text"
+                onChange={onChange}
               />
             </div>
           </div>
@@ -150,14 +249,16 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="city"
                 name="city"
+                value={FormData.city}
                 type="text"
+                onChange={onChange}
               />
             </div>
           </div>
           <div className="sm:col-span-2">
             <label
               className="block text-sm font-medium leading-6 text-gray-900"
-              htmlFor="region"
+              htmlFor="state"
             >
               State / Province
             </label>
@@ -165,16 +266,18 @@ export default function EnrollForm() {
               <input
                 autoComplete="address-level1"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                id="region"
-                name="region"
+                id="state"
+                name="state"
+                value={FormData.state}
                 type="text"
+                onChange={onChange}
               />
             </div>
           </div>
           <div className="sm:col-span-2">
             <label
               className="block text-sm font-medium leading-6 text-gray-900"
-              htmlFor="postal-code"
+              htmlFor="zip"
             >
               ZIP / Postal code
             </label>
@@ -182,12 +285,22 @@ export default function EnrollForm() {
               <input
                 autoComplete="postal-code"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                id="postal-code"
-                name="postal-code"
+                id="zip"
+                name="zip"
+                value={FormData.zip}
                 type="text"
+                onChange={onChange}
               />
             </div>
           </div>
+        </div>
+        <div className="grid grid-cols-1 mt-5 gap-4">
+          <button
+            className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none mt-10"
+            type="submit"
+          >
+            Enroll
+          </button>
         </div>
       </div>
     </form>

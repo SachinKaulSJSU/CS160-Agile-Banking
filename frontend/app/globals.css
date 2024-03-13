@@ -4,17 +4,10 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
+  --background-start-rgb: 255, 255, 255;
   --background-end-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 255, 255, 255;
-    --background-end-rgb: 255, 255, 255;
-  }
-}
 
 body {
   color: rgb(var(--foreground-rgb));
@@ -30,4 +23,20 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .hovereffect {
+    @apply relative inline cursor-pointer;
+  }
+  
+  .hovereffect::before {
+    content: '';
+    @apply absolute -bottom-1 block h-[2px] w-full origin-bottom-right scale-x-0 transition duration-300 ease-in-out;
+    background-color: var(--hover-color, #7c3aed); 
+  }
+  
+  .hovereffect:hover::before {
+    @apply origin-bottom-left scale-x-100;
+  }
+
+  
 }

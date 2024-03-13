@@ -1,12 +1,27 @@
-import React, { useState, FormEvent } from 'react'
+'use client'
+import React, { useState, FormEvent, ChangeEvent } from 'react'
 
 
 export default function LoginForm() {
-  async function onSubmit() {
+  const [FormData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
 
-  }
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+  };
+
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <div className="grid grid-cols-2 gap-5">
         <div className="col-span-full">
           <div className="relative">
@@ -18,9 +33,11 @@ export default function LoginForm() {
                 [&:not(:placeholder-shown)]:pb-2                      
                 autofill:pt-6                      
                 autofill:pb-2"
-              id="hero-login-form-floating-input-username"
+              id="username"
               placeholder="username"
               type="text"
+              value={FormData.username}
+              onChange={onChange}
             />
             <label
               className="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent text-gray-600 peer-disabled:opacity-50 
@@ -31,7 +48,7 @@ export default function LoginForm() {
                 peer-[:not(:placeholder-shown)]:text-xs                        
                 peer-[:not(:placeholder-shown)]:-translate-y-1.5                        
                 peer-[:not(:placeholder-shown)]:text-gray-600"
-              htmlFor="hero-login-form-floating-input-username"
+              htmlFor="username"
             >
               Username
             </label>
@@ -46,9 +63,11 @@ export default function LoginForm() {
                 [&:not(:placeholder-shown)]:pb-2                      
                 autofill:pt-6                      
                 autofill:pb-2"
-              id="hero-login-form-floating-input-password"
+              id="password"
               placeholder="********"
               type="password"
+              value={FormData.username}
+              onChange={onChange}
             />
             <label
               className="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent text-gray-600 peer-disabled:opacity-50 
@@ -59,7 +78,7 @@ export default function LoginForm() {
                 peer-[:not(:placeholder-shown)]:text-xs                        
                 peer-[:not(:placeholder-shown)]:-translate-y-1.5                        
                 peer-[:not(:placeholder-shown)]:text-gray-600"
-              htmlFor="hero-login-form-floating-input-password"
+              htmlFor="password"
             >
               Password
             </label>
