@@ -7,7 +7,7 @@ export default function Home() {
     <main>
         <Header/>
         <HeroSection/>
-        <Footer/>
+        <Footer />
     </main>
   );
 }

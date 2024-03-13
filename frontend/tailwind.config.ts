@@ -36,7 +36,7 @@ const config: Config = {
         },
         green: {
           DEFAULT:colors.emerald,
-          rev:'#A5D142',
+          rev:'#1BDAEE',
         },
         purple: {
           DEFAULT:colors.violet,
@@ -46,12 +46,11 @@ const config: Config = {
         yellow: colors.amber,
         pink: {
           DEFAULT:colors.fuschia,
-          lau:'#A5D142',
+          lau:'#F53E95',
         },
         blue: {
           DEFAULT:colors.blue,
-          lau:'#A5D142',
-          dev:'#6C3FD2',
+          dev:'#3FAAEE',
           test:'#1BDAEE',
         },
         orange: {
