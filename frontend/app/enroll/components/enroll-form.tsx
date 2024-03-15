@@ -1,8 +1,9 @@
 "use client";
 import { useState, FormEvent, ChangeEvent } from "react";
+import { enroll } from '../../api/user-service';
 
 export default function EnrollForm() {
-  const [FormData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     username: "",
     password: "",
     confirmPassword: "",
@@ -17,14 +18,7 @@ export default function EnrollForm() {
     zip: "",
   });
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const onSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -34,10 +28,10 @@ export default function EnrollForm() {
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (FormData.password !== FormData.confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       console.error("Passwords do not match");
     } else {
-      console.log("works lol");
+      enroll(formData);
     }
   };
 
@@ -59,7 +53,7 @@ export default function EnrollForm() {
                   className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                   id="username"
                   name="username"
-                  value={FormData.username}
+                  value={formData.username}
                   type="text"
                   onChange={onChange}
                 />
@@ -81,7 +75,7 @@ export default function EnrollForm() {
                   className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                   id="password"
                   name="password"
-                  value={FormData.password}
+                  value={formData.password}
                   type="password"
                   onChange={onChange}
                 />
@@ -103,7 +97,7 @@ export default function EnrollForm() {
                   className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                   id="confirmPassword"
                   name="confirmPassword"
-                  value={FormData.confirmPassword}
+                  value={formData.confirmPassword}
                   type="password"
                   onChange={onChange}
                 />
@@ -132,7 +126,7 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="firstName"
                 name="firstName"
-                value={FormData.firstName}
+                value={formData.firstName}
                 type="text"
                 onChange={onChange}
               />
@@ -151,7 +145,7 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="lastName"
                 name="lastName"
-                value={FormData.lastName}
+                value={formData.lastName}
                 type="text"
                 onChange={onChange}
               />
@@ -170,7 +164,7 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="email"
                 name="email"
-                value={FormData.email}
+                value={formData.email}
                 type="email"
                 onChange={onChange}
               />
@@ -189,7 +183,7 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="phone"
                 name="phone"
-                value={FormData.phone}
+                value={formData.phone}
                 type="text"
                 onChange={onChange}
               />
@@ -207,9 +201,9 @@ export default function EnrollForm() {
                 autoComplete="country-name"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:max-w-xs sm:text-sm sm:leading-6"
                 id="country"
-                value={FormData.country}
+                value={formData.country}
                 name="country"
-                onChange={onSelectChange}
+                onChange={onChange}
               >
                 <option>United States</option>
                 <option>Canada</option>
@@ -230,7 +224,7 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="streetAddress"
                 name="streetAddress"
-                value={FormData.streetAddress}
+                value={formData.streetAddress}
                 type="text"
                 onChange={onChange}
               />
@@ -249,7 +243,7 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="city"
                 name="city"
-                value={FormData.city}
+                value={formData.city}
                 type="text"
                 onChange={onChange}
               />
@@ -268,7 +262,7 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="state"
                 name="state"
-                value={FormData.state}
+                value={formData.state}
                 type="text"
                 onChange={onChange}
               />
@@ -287,7 +281,7 @@ export default function EnrollForm() {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="zip"
                 name="zip"
-                value={FormData.zip}
+                value={formData.zip}
                 type="text"
                 onChange={onChange}
               />
