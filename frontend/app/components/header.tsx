@@ -17,13 +17,13 @@ export default function Header() {
         </div>
 
         <div className="lg:flex lg:gap-x-12">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
+          <a href="/locations" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
             ATMs/Locations
           </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
-            Support
+          <a href="/deposit" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
+            Deposit
           </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
+          <a href="aboutus" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
             About Us
           </a>
         </div>
