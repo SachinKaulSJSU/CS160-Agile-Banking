@@ -14,8 +14,6 @@ def register(request):
     if serializer.is_valid():
         username = serializer.validated_data.get('username')
         email = serializer.validated_data.get('email')
-        first_name = serializer.validated_data.get('first_name')
-        last_name = serializer.validated_data.get('last_name')
 
         if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
             return serializer.ValidationError({'error': 'Username or Email already taken.'})
