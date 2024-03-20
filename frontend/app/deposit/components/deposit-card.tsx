@@ -1,3 +1,4 @@
+import ImageUpload from "./image-upload";
 export default function DepositCard() {
     return (
       <div className="lg:max-w-lg lg:mx-auto ms-auto justify-center">
@@ -5,7 +6,7 @@ export default function DepositCard() {
           <div className="text-center">
             <h1 className="block text-2xl font-semibold text-gray-800">Deposit </h1>
             <p className="mt-2 text-sm text-gray-600">
-              {/* Log in to manage accounts */}
+              {/* subtitle */}
             </p>
           </div>
   
@@ -14,8 +15,7 @@ export default function DepositCard() {
           </div>
           <div className="w-100">
             
-            Insert place to upload check picture
-
+            <ImageUpload />
 
           </div>
         </div>
