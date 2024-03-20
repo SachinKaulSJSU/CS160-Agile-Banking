@@ -1,9 +1,9 @@
 'use client'
 import React, { useState, FormEvent, ChangeEvent } from 'react'
-
+import { login } from '../api/auth'
 
 export default function LoginForm() {
-  const [FormData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
@@ -17,26 +17,27 @@ export default function LoginForm() {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    login(formData)
   };
 
   return (
     <form onSubmit={onSubmit}>
       <div className="grid grid-cols-2 gap-5">
-        <div className="col-span-full">
+        <div className="col-span-full relative">
           <div className="relative">
             <input
               className="peer p-4 block w-full rounded-lg text-sm placeholder:text-transparent disabled:opacity-50 disabled:pointer-events-none bg-gray-100 text-gray-600                    
                 focus:pt-6                      
-                focus:pb-2                      
+                focus:pb-2     
                 [&:not(:placeholder-shown)]:pt-6                      
-                [&:not(:placeholder-shown)]:pb-2                      
+                [&:not(:placeholder-shown)]:pb-2                                        
                 autofill:pt-6                      
                 autofill:pb-2"
               id="username"
+              name="username"
               placeholder="username"
               type="text"
-              value={FormData.username}
+              value={formData.username}
               onChange={onChange}
             />
             <label
@@ -57,16 +58,18 @@ export default function LoginForm() {
         <div className="col-span-full">
           <div className="relative">
             <input
-              className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-gray-300 focus:ring-gray-300 disabled:opacity-50 disabled:pointer-events-none bg-gray-100 border-gray-700 text-gray-600 focus:ring-gray-600                      focus:pt-6                      
-                focus:pb-2                      
-                [&:not(:placeholder-shown)]:pt-6                      
-                [&:not(:placeholder-shown)]:pb-2                      
-                autofill:pt-6                      
-                autofill:pb-2"
+              className="peer p-4 block w-full rounded-lg text-sm placeholder:text-transparent disabled:opacity-50 disabled:pointer-events-none bg-gray-100 text-gray-600                    
+              focus:pt-6                      
+              focus:pb-2                      
+              [&:not(:placeholder-shown)]:pt-6                      
+              [&:not(:placeholder-shown)]:pb-2                      
+              autofill:pt-6                      
+              autofill:pb-2"
               id="password"
               placeholder="********"
+              name="password"
               type="password"
-              value={FormData.username}
+              value={formData.password}
               onChange={onChange}
             />
             <label

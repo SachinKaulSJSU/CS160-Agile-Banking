@@ -1,7 +1,7 @@
 export const login = async (data) => {
     try {
         console.log('running')
-        const res = await fetch ('http://localhost:8001/api/register/', 
+        const res = await fetch ('http://localhost:8000/api/login/', 
         {
             method:'POST',
             headers: {

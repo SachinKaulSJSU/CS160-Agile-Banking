@@ -9,18 +9,15 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
 
     def validate(self, data):
         # santize for html entities
         data['username'] = escape(data.get('username'))
         data['email'] = escape(data.get('email'))
-
-        username = data.get('username')
-        email = data.get('email')
-
-        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
-            return serializers.ValidationError({'error': 'Username or Email already taken.'})
+        data['first_name'] = escape(data.get('first_name'))
+        data['last_name'] = escape(data.get('last_name'))
+        
         return data    
 
     def create(self, validated_data):
