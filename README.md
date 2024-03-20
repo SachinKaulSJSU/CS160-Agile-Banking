@@ -1,3 +1,4 @@
+# CS160-Agile-Banking
 ## Initial Setup:
 Setup virtual environment with dependencies
 ```bash

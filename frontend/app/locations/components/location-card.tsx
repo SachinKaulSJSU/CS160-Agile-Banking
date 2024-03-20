@@ -1,3 +1,5 @@
+import Map from "./map";
+
 export default function LocationCard() {
     return (
       <div className="lg:max-w-lg lg:mx-auto ms-auto justify-center">
@@ -14,7 +16,7 @@ export default function LocationCard() {
           </div>
           <div className="w-100">
             
-            Insert map here? :3
+            <Map />
 
 
           </div>
