@@ -1,4 +1,3 @@
-import ImageUpload from "./image-upload";
 export default function DepositCard() {
     return (
       <div className="lg:max-w-lg lg:mx-auto ms-auto justify-center">
@@ -15,7 +14,7 @@ export default function DepositCard() {
           </div>
           <div className="w-100">
             
-            <ImageUpload />
+            Upload image?
 
           </div>
         </div>
