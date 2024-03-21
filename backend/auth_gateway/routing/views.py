@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from django.shortcuts import render
 
 USER_URL = 'http://localhost:8001/api'
+ACCOUNT_URL = 'http://localhost:8002/api'
 
 # register
 @api_view(['POST'])
