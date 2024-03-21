@@ -1,6 +1,6 @@
 "use client";
 import { useState, FormEvent, ChangeEvent } from "react";
-import { enroll } from '../../api/user-service';
+import { enroll } from "../../api/user-service";
 
 export default function EnrollForm() {
   const [formData, setFormData] = useState({
@@ -161,13 +161,16 @@ export default function EnrollForm() {
             <div className="mt-2">
               <input
                 autoComplete="email"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="peer block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="email"
                 name="email"
                 value={formData.email}
                 type="email"
                 onChange={onChange}
               />
+              <p className="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
+                Please provide a valid email address.
+              </p>
             </div>
           </div>
           <div className="sm:col-span-3">
