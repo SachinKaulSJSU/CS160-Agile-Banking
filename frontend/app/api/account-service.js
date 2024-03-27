@@ -1,19 +1,14 @@
-// create account
-export const enroll = async (data) => {
+export const create_account = async (data) => {
     try {
         console.log('running')
-        const res = await fetch ('http://localhost:8000/api/register/', 
+        const res = await fetch ('http://localhost:8000/api/create_account/', 
         {
             method:'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": data.username,
-                "email": data.email,
-                "password": data.password,
-                "first_name": data.first_name,
-                "last_name": data.last_name,
+                "type": data.type,
             }),
         }
         );
@@ -22,5 +17,4 @@ export const enroll = async (data) => {
     } catch (err) {
         console.log(err);
     }
-    return responseData
 }

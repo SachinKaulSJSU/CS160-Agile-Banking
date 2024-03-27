@@ -1,8 +1,11 @@
 "use client";
 import { useState, FormEvent, ChangeEvent } from "react";
 import { enroll } from "../../api/user-service";
+import { redirect } from 'next/navigation'
+
 
 export default function EnrollForm() {
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -25,13 +28,23 @@ export default function EnrollForm() {
     }));
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
       console.error("Passwords do not match");
     } else {
-      enroll(formData);
+      try {
+        const response = await enroll(formData);
+        if (response.success){
+          redirect('/login')
+        } else {
+          
+        }
+      }
+      catch {
+
+      }
     }
   };
 
