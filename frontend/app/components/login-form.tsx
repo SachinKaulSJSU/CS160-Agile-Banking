@@ -1,12 +1,22 @@
 'use client'
-import React, { useState, FormEvent, ChangeEvent } from 'react'
+import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react'
 import { login } from '../api/auth'
+import { useRouter } from 'next/navigation'
+
 
 export default function LoginForm() {
+  const router = useRouter()
+  const [isSuccess, setIsSuccess] = useState(false)
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (isSuccess){
+      router.push('/account')
+    }
+  }, [isSuccess])
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
@@ -17,7 +27,11 @@ export default function LoginForm() {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    login(formData)
+    const response = login(formData);
+    console.log(response)
+    if (response != null){
+      setIsSuccess(true);
+    }
   };
 
   return (

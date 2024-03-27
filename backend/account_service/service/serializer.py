@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User 
-from models import BankAccount
+from .models import BankAccount
 
 
 class BankAccountSerializer(serializers.ModelSerializer):
@@ -11,5 +11,5 @@ class BankAccountSerializer(serializers.ModelSerializer):
         fields = ['balance', 'status', 'type', 'user']
         
     def create(self, validated_data):
-        return BankAccount(**validated_data)
+        return BankAccount.objects.create(**validated_data)
         
