@@ -23,7 +23,17 @@ def login(request):
         if user is not None:
             try:
                 asyncio.run(alogin(request,user))
-                return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+                # Session data
+                session_key = request.session.session_key
+                session_expiry = request.session.get_expiry_date()
+
+                # Construct response
+                response_data = {
+                    'message': 'Login successful',
+                    'session_key': session_key,
+                    'session_expiry': session_expiry
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
             except User.DoesNotExist:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         else: 

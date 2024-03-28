@@ -59,11 +59,13 @@ def account_status(request):
     data = request.data
     return post_request(ACCOUNT_URL, 'account_status', data)
 
-# get account
+# get accounts
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def get_account(request):
-    data = request.data
+    user_id = request.user.id
+    data = request.data.copy()
+    data['user'] = user_id
     return post_request(ACCOUNT_URL, 'account', data)
     
