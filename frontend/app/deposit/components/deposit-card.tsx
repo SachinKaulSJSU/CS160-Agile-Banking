@@ -1,3 +1,5 @@
+import DepositForm from "./deposit-form";
+
 export default function DepositCard() {
     return (
       <div className="lg:max-w-lg lg:mx-auto ms-auto justify-center">
@@ -14,7 +16,7 @@ export default function DepositCard() {
           </div>
           <div className="w-100">
             
-            Upload image?
+            <DepositForm/>
 
           </div>
         </div>

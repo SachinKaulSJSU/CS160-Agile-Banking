@@ -14,7 +14,7 @@ export default function LocationCard() {
           <div className="py-5 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6">
             Search by Zip Code or Current Location
           </div>
-          <div className="w-100">
+          <div className="w-100 flex justify-center">
             
             <Map />
 
