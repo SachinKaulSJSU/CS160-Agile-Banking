@@ -14,8 +14,21 @@ export const login = async (data) => {
         }
         );
         const responseData = await res.json()
-        console.log(responseData);
-        return responseData
+        if (res.ok) {
+            // Assuming the session key and expiry are returned from the backend
+            const sessionKey = responseData.session_key;
+            const sessionExpiry = responseData.session_expiry;
+
+            document.cookie = `sessionKey=${sessionKey}; expires=${new Date(sessionExpiry).toUTCString()}; path=/`;
+
+            // Redirect or update UI accordingly
+            console.log('Login successful');
+        } else {
+            // Handle unsuccessful login
+            console.error('Login failed:', responseData.error);
+        }
+
+        return responseData;
     } catch (err) {
         console.log(err);
     }

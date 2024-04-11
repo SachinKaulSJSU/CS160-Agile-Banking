@@ -21,9 +21,9 @@ def post_request(url, endpoint, data):
         return Response({'error': f'{e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # helper function that makes get requests to a specified service    
-def get_request(url, endpoint, data):
+def get_request(url, endpoint, user_id):
     try:
-        response = requests.get(f'{url}/{endpoint}/', data=data)
+        response = requests.get(f'{url}/{endpoint}/', params={'user_id': user_id})
         response.raise_for_status()
         return Response(response.json(), status=response.status_code)
     except requests.HTTPError as e:
@@ -46,9 +46,8 @@ def register(request):
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def create_account(request):
-    user_id = request.user.id
-    data = request.data.copy()
-    data['user'] = user_id
+    data = request.data
+    data['user'] = request.user.id
     return post_request(ACCOUNT_URL, 'create_account', data)
 
 # account status
@@ -59,11 +58,19 @@ def account_status(request):
     data = request.data
     return post_request(ACCOUNT_URL, 'account_status', data)
 
-# get account
+# get all accounts
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-def get_account(request):
-    data = request.data
-    return post_request(ACCOUNT_URL, 'account', data)
+def get_accounts_by_user(request):
+    user_id = request.user.id
+
+    try:
+        # Forward the request to the 'get_accounts' endpoint
+        response = requests.get(f'{ACCOUNT_URL}/get_accounts_by_user/', params={'user_id': user_id})
+        response.raise_for_status()  # Raise an exception for any HTTP error status
+        return Response(response.json(), status=response.status_code)
+    except requests.RequestException as e:
+        # Handle any errors that occurred during the request
+        return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
