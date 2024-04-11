@@ -1,4 +1,7 @@
-export const create_account = async (type, csrftoken) => {
+import { getCookie } from './csrfUtils';
+
+export const create_account = async (type) => {
+  const csrftoken = getCookie('csrftoken')
   try {
     const res = await fetch("http://localhost:8000/api/create_account/", {
       method: "POST",

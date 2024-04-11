@@ -20,7 +20,6 @@ import {
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
 import  { create_account }  from "../../api/account-service";
-import { getCookie } from '../../api/csrfUtils';
 
 
 interface CardInfo {
@@ -28,8 +27,8 @@ interface CardInfo {
   picture: string;
 }
 
-interface Props {
-  refreshAccounts: () => Promise<void>;
+interface Refresh {
+  refreshAccounts: ()=>Promise<void>;
 }
 
 function SelectableCard({
@@ -76,19 +75,13 @@ function SelectableCard({
   );
 }
 
-export default function AccountDialog() {
+export default function AccountDialog({ refreshAccounts } : Refresh) {
   const [selectedCard, setSelectedCard] = useState<CardInfo | null>(null);
-  const [csrfToken, setCsrfToken] = useState<string | null>('');
-
-  useEffect(() => {
-    const token: string | null = getCookie('csrftoken');
-    console.log(token)
-    setCsrfToken(token);
-  }, []);
 
   const submitSelection = async() => {
     if (selectedCard) {
-      await create_account(selectedCard.title, csrfToken);
+      await create_account(selectedCard.title);
+      refreshAccounts();
     } else {
       alert("Please select an option before submitting.");
     }

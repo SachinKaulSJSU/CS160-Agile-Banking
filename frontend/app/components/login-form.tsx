@@ -25,9 +25,9 @@ export default function LoginForm() {
     }));
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = login(formData);
+    const response = await login(formData);
     console.log(response)
     if (response != null){
       setIsSuccess(true);

@@ -67,13 +67,10 @@ export default function Accounts() {
                               <div className="flex justify-between">
                                 <div>
                                   <p className="text-lg font-medium leading-none">
-                                    {account.type} Account
+                                    Agile Bank {account.type} {account.id}
                                   </p>
                                   <p className="font-light">
                                     Status: {account.status ? "Closed" : "Open"}
-                                  </p>
-                                  <p className="font-light">
-                                    ID: {account.id}
                                   </p>
                                 </div>
                                 <div>
@@ -117,7 +114,7 @@ export default function Accounts() {
         </ScrollArea>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <AccountDialog />
+        <AccountDialog refreshAccounts={fetchAccounts}/>
       </CardFooter>
     </Card>
   );
