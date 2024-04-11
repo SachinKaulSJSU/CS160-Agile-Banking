@@ -19,11 +19,17 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
-import { create_account } from "../../api/account-service";
+import  { create_account }  from "../../api/account-service";
+import { getCookie } from '../../api/csrfUtils';
+
 
 interface CardInfo {
   title: string;
   picture: string;
+}
+
+interface Props {
+  refreshAccounts: () => Promise<void>;
 }
 
 function SelectableCard({
@@ -72,10 +78,17 @@ function SelectableCard({
 
 export default function AccountDialog() {
   const [selectedCard, setSelectedCard] = useState<CardInfo | null>(null);
+  const [csrfToken, setCsrfToken] = useState<string | null>('');
 
-  const submitSelection = () => {
+  useEffect(() => {
+    const token: string | null = getCookie('csrftoken');
+    console.log(token)
+    setCsrfToken(token);
+  }, []);
+
+  const submitSelection = async() => {
     if (selectedCard) {
-      alert(`Selected Card: ${selectedCard.title}`);
+      await create_account(selectedCard.title, csrfToken);
     } else {
       alert("Please select an option before submitting.");
     }

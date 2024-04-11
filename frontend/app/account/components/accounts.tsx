@@ -15,7 +15,7 @@ import { get_accounts_by_user } from "../../api/account-service";
 import AccountDialog from "./account-dialog";
 
 interface BankAccount {
-  account_id: string;
+  id: string;
   balance: string;
   type: string;
   status: boolean;
@@ -25,17 +25,18 @@ export default function Accounts() {
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const fetchAccounts = async () => {
+    try {
+      const response = await get_accounts_by_user();
+      setAccounts(response);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const response = await get_accounts_by_user();
-        setAccounts(response);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
-        setLoading(false);
-      }
-    };
     fetchAccounts();
   }, []);
 
@@ -51,14 +52,14 @@ export default function Accounts() {
             {
               accounts && accounts.length > 0 ? (
                 accounts.map((account) => (
-                  <div key={account.account_id}>
+                  <div key={account.id}>
                     <Link href="/customerdash">
                       <Card className="cursor-pointer hover:shadow-lg">
                         <CardContent className="p-4 grid">
                           <div className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
                             <span
                               className={`flex h-2 w-2 translate-y-1 rounded-full ${
-                                account.status ? "bg-blue-500" : "bg-red-500"
+                                account.status ? "bg-red-500" : "bg-blue-500"
                               }`}
                             />
 
@@ -69,7 +70,10 @@ export default function Accounts() {
                                     {account.type} Account
                                   </p>
                                   <p className="font-light">
-                                    Status: {account.status ? "Open" : "Closed"}
+                                    Status: {account.status ? "Closed" : "Open"}
+                                  </p>
+                                  <p className="font-light">
+                                    ID: {account.id}
                                   </p>
                                 </div>
                                 <div>
@@ -95,7 +99,7 @@ export default function Accounts() {
                     <CardTitle>Searching for accounts...</CardTitle>
                   </CardHeader>
                 </Card>
-              ) // Do not render anything if accounts are empty initially
+              )
             }
 
             {!loading &&

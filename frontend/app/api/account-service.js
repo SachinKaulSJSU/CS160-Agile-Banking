@@ -1,13 +1,15 @@
-export const create_account = async (data) => {
+export const create_account = async (type, csrftoken) => {
   try {
-    console.log("running");
     const res = await fetch("http://localhost:8000/api/create_account/", {
       method: "POST",
+      credentials: 'include',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
       },
       body: JSON.stringify({
-        type: data.type,
+        type: type,
+
       }),
     });
     const responseData = await res.json();
@@ -20,7 +22,7 @@ export const create_account = async (data) => {
 export const get_accounts_by_user = async (data) => {
   try {
     const res = await fetch("http://localhost:8000/api/get_accounts_by_user/", {
-      method: "Get",
+      method: "GET",
       credentials: 'include',
     });
 

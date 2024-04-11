@@ -8,7 +8,7 @@ class BankAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BankAccount
-        fields = ['balance', 'status', 'type', 'user']
+        fields = ['id', 'balance', 'status', 'type', 'user']
         
     def create(self, validated_data):
         return BankAccount.objects.create(**validated_data)

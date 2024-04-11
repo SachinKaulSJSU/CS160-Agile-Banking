@@ -46,9 +46,8 @@ def register(request):
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def create_account(request):
-    user_id = request.user.id
-    data = request.data.copy()
-    data['user'] = user_id
+    data = request.data
+    data['user'] = request.user.id
     return post_request(ACCOUNT_URL, 'create_account', data)
 
 # account status
