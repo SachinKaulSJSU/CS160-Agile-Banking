@@ -18,9 +18,8 @@ def create_account(request):
 # Change Bank Account Status
 @api_view(['POST'])
 def account_status(request):
-    user_id = request.user
     try:
-        bank_account = BankAccount.objects.get(user=user_id)
+        bank_account = BankAccount.objects.get(id=request.data.get("account_id"))
     except BankAccount.DoesNotExist:
         return Response({'error': 'Bank account not found.'}, status=status.HTTP_404_NOT_FOUND)
     
