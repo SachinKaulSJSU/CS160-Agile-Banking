@@ -1,11 +1,11 @@
 "use client";
 import { useState, FormEvent, ChangeEvent } from "react";
 import { enroll } from "../../api/user-service";
-import { redirect } from 'next/navigation'
-
+import { redirect } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function EnrollForm() {
-
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -20,6 +20,7 @@ export default function EnrollForm() {
     state: "",
     zip: "",
   });
+  const { toast } = useToast();
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData((prevState) => ({
@@ -36,20 +37,28 @@ export default function EnrollForm() {
     } else {
       try {
         const response = await enroll(formData);
-        if (response.success){
-          redirect('/login')
+        if (response.success) {
+          redirect("/login");
         } else {
-          
+          toast({
+            title: "Login unsuccessful",
+            description: "Please provide a valid username or password",
+            variant: "destructive",
+          });
         }
-      }
-      catch {
-
+      } catch {
+        toast({
+          title: "Login unsuccessful",
+          description: "Please provide a valid username or password",
+          variant: "destructive",
+        });
       }
     }
   };
 
   return (
     <form onSubmit={onSubmit}>
+      <Toaster />
       <div className="border-b border-gray-900/10 pb-12 px-10">
         <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div className="sm:col-span-4">

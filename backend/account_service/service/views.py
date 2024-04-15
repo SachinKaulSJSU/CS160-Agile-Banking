@@ -32,9 +32,7 @@ def account_status(request):
 
 # Get All Bank Accounts by user:
 @api_view(['GET'])
-def get_accounts_by_user(request):
-    user_id = request.query_params.get('user_id')
-
+def get_accounts_by_user(request, user_id):
     try:
         bank_accounts = BankAccount.objects.filter(user=user_id)
         serializer = BankAccountSerializer(bank_accounts, many=True)

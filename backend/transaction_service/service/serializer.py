@@ -7,7 +7,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ['amount', 'ttype', 'user']
+        fields = ['amount', 'type', 'user']
 
     def create(self, validated_data):
         return Transaction.objects.create(**validated_data)

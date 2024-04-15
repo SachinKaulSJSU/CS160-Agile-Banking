@@ -1,5 +1,6 @@
 import { getCookie } from './csrfUtils';
 
+
 export const create_account = async (type) => {
   const csrftoken = getCookie('csrftoken')
   try {

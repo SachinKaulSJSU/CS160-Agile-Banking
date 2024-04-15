@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+session = requests.Session()
+session.keep_alive = True
 
 USER_URL = 'http://localhost:8001/api'
 ACCOUNT_URL = 'http://localhost:8002/api'
@@ -12,7 +14,7 @@ ACCOUNT_URL = 'http://localhost:8002/api'
 # helper function that makes post requests to a specified service
 def post_request(url, endpoint, data):
     try:
-        response = requests.post(f'{url}/{endpoint}/', data=data)
+        response = session.post(f'{url}/{endpoint}/', data=data)
         response.raise_for_status()
         return Response(response.json(), status=response.status_code)
     except requests.HTTPError as e:
@@ -23,7 +25,7 @@ def post_request(url, endpoint, data):
 # helper function that makes get requests to a specified service    
 def get_request(url, endpoint, user_id):
     try:
-        response = requests.get(f'{url}/{endpoint}/', params={'user_id': user_id})
+        response = session.get(f'{url}/{endpoint}/', params={'user_id': user_id})
         response.raise_for_status()
         return Response(response.json(), status=response.status_code)
     except requests.HTTPError as e:
@@ -63,12 +65,10 @@ def account_status(request):
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def get_accounts_by_user(request):
-    user_id = request.user.id
-
     try:
         # Forward the request to the 'get_accounts' endpoint
-        response = requests.get(f'{ACCOUNT_URL}/get_accounts_by_user/', params={'user_id': user_id})
-        response.raise_for_status()  # Raise an exception for any HTTP error status
+        response = session.get(f'{ACCOUNT_URL}/get_accounts_by_user/{request.user.id}')
+        
         return Response(response.json(), status=response.status_code)
     except requests.RequestException as e:
         # Handle any errors that occurred during the request

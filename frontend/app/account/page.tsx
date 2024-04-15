@@ -1,13 +1,11 @@
-import Header from "../components/header";
-import Footer from "../components/footer";
 import AccountContainer from "./components/account-container";
+import SideBar from "./components/sidebar";
 
-export default function Enroll() {
+export default function Account() {
   return (
     <main>
-      <Header />
-      <AccountContainer/>
-      <Footer />
+      <SideBar />
+      <AccountContainer />
     </main>
   );
 }
