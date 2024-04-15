@@ -52,6 +52,7 @@ def create_account(request):
     data['user'] = request.user.id
     return post_request(ACCOUNT_URL, 'create_account', data)
 
+
 # account status
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
@@ -59,6 +60,7 @@ def create_account(request):
 def account_status(request):
     data = request.data
     return post_request(ACCOUNT_URL, 'account_status', data)
+
 
 # get all accounts
 @api_view(['GET'])

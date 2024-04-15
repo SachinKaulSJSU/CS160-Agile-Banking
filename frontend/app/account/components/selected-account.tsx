@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import AccountDialog from "./account-dialog";
 
 interface BankAccount {
   id: string;
@@ -18,11 +17,10 @@ interface BankAccount {
   status: boolean;
 }
 
-export default function Accounts() {
-
+export default function SelectedAccount() {
 
   return (
-    <Card className="lg:flex-grow md:w-[500px] sm:w-flex lg:h-[430px] sm:h-[250px]">
+    <Card className="lg:flex-grow md:w-[500px] sm:w-flex lg:h-[380px] sm:h-[250px]">
       <CardHeader>
         <CardTitle>Selected Account</CardTitle>
       </CardHeader>

@@ -23,6 +23,28 @@ export const create_account = async (type) => {
   }
 };
 
+export const account_status = async (data) => {
+  const csrftoken = getCookie('csrftoken')
+  console.log(data)
+  try {
+    const res = await fetch("http://localhost:8000/api/account_status/", {
+      method: "POST",
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+      },
+      body: JSON.stringify({
+        account_id: data,
+      }),
+    });
+    const responseData = await res.json();
+    console.log(responseData);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const get_accounts_by_user = async (data) => {
   try {
     const res = await fetch("http://localhost:8000/api/get_accounts_by_user/", {
