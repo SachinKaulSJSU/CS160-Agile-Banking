@@ -20,26 +20,25 @@ import {
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
 import  { create_account }  from "../../api/account-service";
-import { getCookie } from '../../api/csrfUtils';
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
+import { FaMoneyCheck, FaPiggyBank,} from "react-icons/fa6";
 
 
 interface CardInfo {
   title: string;
-  picture: string;
 }
 
-interface Props {
-  refreshAccounts: () => Promise<void>;
+interface Refresh {
+  refreshAccounts: ()=>Promise<void>;
 }
 
 function SelectableCard({
   title,
-  picture,
   selectedCard,
   setSelectedCard,
 }: {
   title: string;
-  picture: string;
   setSelectedCard: React.Dispatch<React.SetStateAction<CardInfo | null>>;
   selectedCard: CardInfo | null;
 }) {
@@ -53,7 +52,7 @@ function SelectableCard({
   const toggleSelection = () => {
     setSelected(!selected);
     if (!selected) {
-      setSelectedCard({ title, picture });
+      setSelectedCard({ title });
     } else {
       setSelectedCard(null);
     }
@@ -61,43 +60,52 @@ function SelectableCard({
 
   return (
     <Card
-      className={`cursor-pointer ${
-        selected ? "shadow-2xl bg-slate-100" : "hover:shadow-xl"
+      className={`w-[180px] cursor-pointer ${
+        selected ? "shadow-2xl bg-blue-500 text-white" : "hover:shadow-xl"
       } ${selected ? "selected" : ""}`}
       onClick={toggleSelection}
     >
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex aspect-square items-center justify-center">
-        <img className="w-auto" src={picture} alt={title} />
+      <CardContent className="flex items-center justify-center">
+        {title === "Savings" ?(
+          <FaPiggyBank className="w-10 h-10"/>
+        ) : (
+          <FaMoneyCheck className="w-10 h-10"/>
+        )}
       </CardContent>
     </Card>
   );
 }
 
-export default function AccountDialog() {
+export default function AccountDialog({ refreshAccounts } : Refresh) {
   const [selectedCard, setSelectedCard] = useState<CardInfo | null>(null);
-  const [csrfToken, setCsrfToken] = useState<string | null>('');
-
-  useEffect(() => {
-    const token: string | null = getCookie('csrftoken');
-    console.log(token)
-    setCsrfToken(token);
-  }, []);
+  const { toast } = useToast();
 
   const submitSelection = async() => {
     if (selectedCard) {
-      await create_account(selectedCard.title, csrfToken);
+      await create_account(selectedCard.title);
+      refreshAccounts();
+      toast({
+        title: "Success! Opened bank account.",
+        description: "A bank account has been opened.",
+        variant: "constructive",
+      });
     } else {
-      alert("Please select an option before submitting.");
+      toast({
+        title: "Uh oh! Unable to open bank account.",
+        description: "There was a problem creating a bank account.",
+        variant: "destructive",
+      });
     }
   };
 
   return (
     <Dialog>
+      <Toaster />
       <DialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-800 p-5">
+        <Button className="flex span bg-blue-600 hover:bg-blue-800 p-5 w-[100%]">
           Open Bank Account
         </Button>
       </DialogTrigger>
@@ -109,16 +117,14 @@ export default function AccountDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex justify-between">
+        <div className="grid grid-flow-col">
           <SelectableCard
             title="Checking"
-            picture="./checking.png"
             selectedCard={selectedCard}
             setSelectedCard={setSelectedCard}
           />
           <SelectableCard
             title="Savings"
-            picture="./savings.png"
             selectedCard={selectedCard}
             setSelectedCard={setSelectedCard}
           />

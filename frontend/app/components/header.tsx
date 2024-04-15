@@ -17,19 +17,32 @@ export default function Header() {
         </div>
 
         <div className="lg:flex lg:gap-x-12">
-          <a href="/locations" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
+          <a
+            href="/locations"
+            className="text-sm font-semibold leading-6 text-gray-900 hovereffect"
+          >
             ATMs/Locations
           </a>
-          <a href="/deposit" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
+          <a
+            href="/deposit"
+            className="text-sm font-semibold leading-6 text-gray-900 hovereffect"
+          >
             Deposit
           </a>
-          <a href="aboutus" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
+          <a
+            href="aboutus"
+            className="text-sm font-semibold leading-6 text-gray-900 hovereffect"
+          >
             About Us
           </a>
         </div>
+
         <div className="lg:flex lg:flex-1 lg:justify-end">
-          <a href="/login" className="text-sm font-semibold leading-6 text-gray-900 hovereffect">
-            Log in <span aria-hidden="true">&rarr;</span>
+          <a
+            href="/login"
+            className="text-sm font-semibold leading-6 text-gray-900 hovereffect"
+          >
+            Login <span aria-hidden="true">&rarr;</span>
           </a>
         </div>
       </nav>
