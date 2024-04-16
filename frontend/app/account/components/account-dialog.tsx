@@ -100,6 +100,9 @@ export default function AccountDialog({ refreshAccounts }: Refresh) {
         if (initialBalance < 200){
           throw new Error("Initial deposit must be at least 200.");
         }
+        if (initialBalance > 1000000000){
+          throw new Error("Initial deposit is to large.");
+        }
         await create_account(selectedCard.title, initialBalance);
         refreshAccounts();
         toast({
@@ -162,7 +165,7 @@ export default function AccountDialog({ refreshAccounts }: Refresh) {
             value={balance}
             onChange={handleChange}
             defaultValue="200"
-            step=".01"
+            step="200"
           />
         </div>
         <DialogFooter className="p-3">

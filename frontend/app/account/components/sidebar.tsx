@@ -84,7 +84,7 @@ export default function SideBar() {
             <li>
               <a
                 className="flex items-center p-3 text-gray-900 rounded-lg hover:bg-gray-100"
-                href="/account"
+                href="/account/payments"
               >
                 <FaMoneyCheck className="w-5 h-5" aria-hidden="true" />
                 <span className="ms-3">Payments</span>
@@ -93,7 +93,7 @@ export default function SideBar() {
             <li>
               <a
                 className="flex items-center p-3 text-gray-900 rounded-lg hover:bg-gray-100"
-                href="/account"
+                href="/account/deposit"
               >
                 <FaPiggyBank className="w-5 h-5" aria-hidden="true" />
                 <span className="ms-3">Deposit</span>
@@ -102,7 +102,7 @@ export default function SideBar() {
             <li>
               <a
                 className="flex items-center p-3 text-gray-900 rounded-lg hover:bg-gray-100"
-                href="/account"
+                href="/account/locations"
               >
                 <div>
                   <FaLocationDot className="w-5 h-5" aria-hidden="true" />
