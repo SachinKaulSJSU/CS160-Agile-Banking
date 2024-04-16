@@ -1,7 +1,7 @@
 import { getCookie } from './csrfUtils';
 
 
-export const create_account = async (type) => {
+export const create_account = async (type, balance) => {
   const csrftoken = getCookie('csrftoken')
   try {
     const res = await fetch("http://localhost:8000/api/create_account/", {
@@ -13,7 +13,7 @@ export const create_account = async (type) => {
       },
       body: JSON.stringify({
         type: type,
-
+        balance: balance,
       }),
     });
     const responseData = await res.json();
