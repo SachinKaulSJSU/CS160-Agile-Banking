@@ -18,7 +18,10 @@ export default function LocationCard() {
             
             <Map />
 
-
+            <script
+              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmIv1uVuHXSitT86XPl3FnZ6RwjoiTdhY&callback=initMap&libraries=places&v=weekly"
+              defer
+            ></script>
           </div>
         </div>
       </div>
