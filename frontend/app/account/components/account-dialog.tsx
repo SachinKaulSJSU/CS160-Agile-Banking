@@ -18,11 +18,12 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import React, { useState, useEffect } from "react";
-import  { create_account }  from "../../api/account-service";
+import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
+import { create_account } from "../../api/account-service";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { FaMoneyCheck, FaPiggyBank,} from "react-icons/fa6";
+import { FaMoneyCheck, FaPiggyBank } from "react-icons/fa6";
+import { Input } from "@/components/ui/input";
 
 
 interface CardInfo {
@@ -30,7 +31,7 @@ interface CardInfo {
 }
 
 interface Refresh {
-  refreshAccounts: ()=>Promise<void>;
+  refreshAccounts: () => Promise<void>;
 }
 
 function SelectableCard({
@@ -61,7 +62,7 @@ function SelectableCard({
   return (
     <Card
       className={`w-[180px] cursor-pointer ${
-        selected ? "shadow-2xl bg-blue-500 text-white" : "hover:shadow-xl"
+        selected ? "bg-blue-500 text-white" : "hover:bg-blue-200"
       } ${selected ? "selected" : ""}`}
       onClick={toggleSelection}
     >
@@ -69,33 +70,57 @@ function SelectableCard({
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent className="flex items-center justify-center">
-        {title === "Savings" ?(
-          <FaPiggyBank className="w-10 h-10"/>
+        {title === "Savings" ? (
+          <FaPiggyBank className="w-10 h-10" />
         ) : (
-          <FaMoneyCheck className="w-10 h-10"/>
+          <FaMoneyCheck className="w-10 h-10" />
         )}
       </CardContent>
     </Card>
   );
 }
 
-export default function AccountDialog({ refreshAccounts } : Refresh) {
+export default function AccountDialog({ refreshAccounts }: Refresh) {
   const [selectedCard, setSelectedCard] = useState<CardInfo | null>(null);
+  const [balance, setBalance] = useState<string>("");
   const { toast } = useToast();
 
-  const submitSelection = async() => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const regex = /^\d+(\.\d{1,2})?$/;
+    const inputValue = e.target.value;
+    if (regex.test(inputValue) || inputValue === '') {
+      setBalance(inputValue);
+    }
+  };
+
+  const submitSelection = async () => {
     if (selectedCard) {
-      await create_account(selectedCard.title);
-      refreshAccounts();
-      toast({
-        title: "Success! Opened bank account.",
-        description: "A bank account has been opened.",
-        variant: "constructive",
-      });
+      try {
+        const initialBalance = parseFloat(balance);
+        if (initialBalance < 200){
+          throw new Error("Initial deposit must be at least 200.");
+        }
+        if (initialBalance > 1000000000){
+          throw new Error("Initial deposit is to large.");
+        }
+        await create_account(selectedCard.title, initialBalance);
+        refreshAccounts();
+        toast({
+          title: "Success! Opened bank account.",
+          description: "A bank account has been opened.",
+          variant: "constructive",
+        });
+      } catch (err) {
+        toast({
+          title: "Uh oh! Unable to open bank account.",
+          description: "" + err,
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Uh oh! Unable to open bank account.",
-        description: "There was a problem creating a bank account.",
+        description: "There was a problem opening a bank account.",
         variant: "destructive",
       });
     }
@@ -129,8 +154,23 @@ export default function AccountDialog({ refreshAccounts } : Refresh) {
             setSelectedCard={setSelectedCard}
           />
         </div>
+
+        <div>
+          <label className="text-sm" htmlFor="balance">Inital deposit must be at least $200.</label>
+          <Input
+            id="balance"
+            name="balance"
+            type="number"
+            placeholder="Initial Deposit"
+            value={balance}
+            onChange={handleChange}
+            defaultValue="200"
+            step="200"
+          />
+        </div>
         <DialogFooter className="p-3">
           <DialogClose asChild>
+            
             <Button
               className="bg-blue-600 hover:bg-blue-800"
               type="submit"

@@ -1,35 +1,35 @@
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
 from django.contrib.auth.models import User
+from django.db import transaction
 
-from ..service.serializer import TransactionSerializer
-from .models import BankAccount
+from .serializer import TransactionSerializer
+from service.models import BankAccount
 
 
-# Transaction
+# Deposit
 @api_view(['POST'])
-def transaction(request):
-    transSerializer = TransactionSerializer(data=request.data)
-    if transSerializer.is_valid():
-        amount = transSerializer.validated_data.get('amount')
-        
+def deposit(request):
+    try:
+        with transaction.atomic():  # Start a database transaction
+            bank_account = BankAccount.objects.select_for_update().get(id=request.data.get("account"))
 
-        if amount <= 0:
-            return transSerializer.ValidationError({'error': 'Please enter a valid number.'})
-        user_id = request.user
-        try:
-            bank_account = BankAccount.objects.get(user=user_id)
-        except BankAccount.DoesNotExist:
-            return Response({'error': 'Bank account not found.'}, status=status.HTTP_404_NOT_FOUND)
-        bank_account.balance += amount
-        bank_account.save
-        transSerializer.save() # calls create method in serializer
+            # if amount is negative or 0
+            if (request.data.get("amount") <= 0):
+                return Response({'message': 'Invalid amount.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # add to account balance
+            bank_account.balance += request.data.get("amount")
+            bank_account.save()
 
+            serializer = TransactionSerializer(data=request.data)
 
-        return Response({'message': 'Deposit successful. Current balance: ' + bank_account.balance}, status=status.HTTP_201_CREATED)
-    return Response(transSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if serializer.is_valid():
+                serializer.save() 
+                return Response({'message': 'Transaction successfully created.'}, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+ 
+    except BankAccount.DoesNotExist:
+        return Response({'error': 'Bank account not found.'}, status=status.HTTP_404_NOT_FOUND)

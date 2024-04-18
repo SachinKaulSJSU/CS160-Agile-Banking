@@ -91,7 +91,7 @@ function SelectableCard({
                   </div>
                   <div>
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="text-green-500 hover:text-green-800">
+                      <DropdownMenuTrigger className="text-slate-700 hover:text-black">
                         <FaWrench />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
@@ -157,12 +157,15 @@ export default function Accounts() {
             <div className="p-3 grid xl:grid-cols-2 lg:grid-cols-1 gap-3">
               {accounts && accounts.length > 0 ? (
                 accounts.map((account) => (
-                  <SelectableCard
-                    account={account}
-                    accountStatus={accountStatus}
-                    selectedCard={selectedCard}
-                    setSelectedCard={setSelectedCard}
-                  />
+                  
+                    <SelectableCard
+                      account={account}
+                      accountStatus={accountStatus}
+                      selectedCard={selectedCard}
+                      setSelectedCard={setSelectedCard}
+                      key={account.id}
+                    />
+                  
                 ))
               ) : (
                 <Card>

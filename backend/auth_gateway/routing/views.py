@@ -10,6 +10,7 @@ session.keep_alive = True
 
 USER_URL = 'http://localhost:8001/api'
 ACCOUNT_URL = 'http://localhost:8002/api'
+TRANSACTION_URL = 'http://localhost:8003/api'
 
 # helper function that makes post requests to a specified service
 def post_request(url, endpoint, data):
@@ -75,4 +76,14 @@ def get_accounts_by_user(request):
     except requests.RequestException as e:
         # Handle any errors that occurred during the request
         return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+# TRANSACTION SERVICE
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def deposit(request):
+    data = request.data
+    return post_request(TRANSACTION_URL, 'deposit', data)
+
     

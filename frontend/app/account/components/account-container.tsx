@@ -85,14 +85,14 @@ export default function AccountContainer() {
           </svg>
         </p>
       </div> */}
-          <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-4 mb-4">
-            <div className="flex items-center justify-center col-span-1">
+          <div className="grid 2xl:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1 gap-4 mb-4">
+            <div className="flex items-center justify-center 2xl:col-span-1 lg:col-span-2 sm:col-span-1">
               <Accounts />
             </div>
             <div className="flex items-center justify-center col-span-1">
               <SelectedAccount />
             </div>
-            <div className="flex items-center justify-center lg:col-span-2 sm:col-span-1">
+            <div className="flex items-center justify-center 2xl:col-span-2 lg:col-span-3 sm:col-span-1">
               <Transactions />
             </div>
           </div>
