@@ -1,25 +1,24 @@
-"use client";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle, 
 } from "@/components/ui/card";
-import React, { useState, useEffect } from "react";
+import DepositForm from "./deposit-form";
 
 
-
-export default function PaymentsCard() {
-
+export default function DepositCard() {
+  
+  
   return (
     <Card className="lg:flex-grow md:w-[500px] sm:w-flex">
       <CardHeader>
-        <CardTitle>Make a payment</CardTitle>
+        <CardTitle>Deposit</CardTitle>
       </CardHeader>
       <CardContent>
-        
+        <DepositForm />
       </CardContent>
     </Card>
   );

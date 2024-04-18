@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import transaction
+from .views import deposit
 
 urlpatterns = [
-    path('deposit/', transaction),
+    path('deposit/', deposit),
 ]
