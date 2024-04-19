@@ -96,7 +96,7 @@ export default function SideBar() {
                 href="/account/deposit"
               >
                 <FaPiggyBank className="w-5 h-5" aria-hidden="true" />
-                <span className="ms-3">Deposit</span>
+                <span className="ms-3">Deposit/Transfer</span>
               </a>
             </li>
             <li>

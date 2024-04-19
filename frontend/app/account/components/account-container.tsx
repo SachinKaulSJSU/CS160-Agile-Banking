@@ -90,7 +90,7 @@ export default function AccountContainer() {
               <Accounts />
             </div>
             <div className="flex items-center justify-center col-span-1">
-              <SelectedAccount />
+              {/* <SelectedAccount /> */}
             </div>
             <div className="flex items-center justify-center 2xl:col-span-2 lg:col-span-3 sm:col-span-1">
               <Transactions />

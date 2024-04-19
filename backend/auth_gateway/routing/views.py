@@ -17,9 +17,12 @@ def post_request(url, endpoint, data):
     try:
         response = session.post(f'{url}/{endpoint}/', data=data)
         response.raise_for_status()
+        
+        # Add logging to inspect response content
+        print("Response content:", response.content)
         return Response(response.json(), status=response.status_code)
     except requests.HTTPError as e:
-        return Response({'error': f'{e}: {e.response.json()}'}, status=e.response.status_code)
+        return Response({'error': f'{e}'}, status=e.response.status_code)
     except requests.RequestException as e:
         return Response({'error': f'{e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -30,7 +33,7 @@ def get_request(url, endpoint, user_id):
         response.raise_for_status()
         return Response(response.json(), status=response.status_code)
     except requests.HTTPError as e:
-        return Response({'error': f'{e}: {e.response.json()}'}, status=e.response.status_code)
+        return Response({'error': f'{e}'}, status=e.response.status_code)
     except requests.RequestException as e:
         return Response({'error': f'{e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -79,11 +82,20 @@ def get_accounts_by_user(request):
     
 
 # TRANSACTION SERVICE
+# Deposit
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def deposit(request):
     data = request.data
     return post_request(TRANSACTION_URL, 'deposit', data)
+
+# Transfer money internally
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def transfer(request):
+    data = request.data
+    return post_request(TRANSACTION_URL, 'transfer', data)
 
     

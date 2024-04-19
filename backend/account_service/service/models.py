@@ -13,3 +13,4 @@ class BankAccount(models.Model):
     status = models.BooleanField(default=True)
     type = models.CharField(max_length=8, choices=ACCOUNT_TYPE_CHOICES, default=CHECKING)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
