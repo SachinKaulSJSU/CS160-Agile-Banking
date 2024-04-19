@@ -64,7 +64,7 @@ export default function DepositForm() {
   const submitDeposit = async () => {
     try {
       const depositAmount = parseFloat(amount);
-      console.log(accountID)
+      console.log(accountID);
       if (!accountID) {
         throw new Error("Please select an account.");
       }
@@ -80,7 +80,12 @@ export default function DepositForm() {
         throw new Error("Deposit amount is too large.");
       }
 
-      await deposit(depositAmount, accountID);
+      const response = await deposit(depositAmount, accountID);
+      console.log(response.error)
+      if (response.error){
+        throw new Error("Backend error: Bad Request");
+      }
+
       toast({
         title: "Success! Deposited into account.",
         description: "Amount: " + depositAmount,
@@ -89,7 +94,7 @@ export default function DepositForm() {
       fetchAccounts();
     } catch (err) {
       toast({
-        title: "Uh oh! Unable to depost.",
+        title: "Uh oh! Unable to deposit.",
         description: "" + err,
         variant: "destructive",
       });
@@ -125,10 +130,14 @@ export default function DepositForm() {
                           {account.type} {account.id} Balance: $
                           {account.balance}
                         </SelectItem>
-                      ) : null
+                      ) : (
+                        <SelectItem value="noAccount" disabled>
+                          No open bank accounts
+                        </SelectItem>
+                      )
                     )
                   ) : (
-                    <SelectItem value="account_id">
+                    <SelectItem value="noAccount" className="disabled" disabled>
                       No open bank accounts
                     </SelectItem>
                   )}
@@ -147,13 +156,13 @@ export default function DepositForm() {
               step="200"
             />
 
-            <Button type="submit" onClick={submitDeposit}>
+            <Button type="submit" onClick={submitDeposit} className="bg-blue-600 hover:bg-blue-800">
               Submit
             </Button>
           </div>
         </TabsContent>
         <TabsContent value="transfer">
-          <TransferForm fetchAccounts={fetchAccounts} accounts={accounts}/>
+          <TransferForm fetchAccounts={fetchAccounts} accounts={accounts} />
         </TabsContent>
       </Tabs>
     </div>

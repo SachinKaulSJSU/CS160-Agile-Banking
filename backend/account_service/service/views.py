@@ -42,11 +42,11 @@ def get_accounts_by_user(request, user_id):
 
 # Get Bank Account by ID:
 @api_view(['GET'])
-def get_account_by_id(request, account_id):
+def get_account_by_id(request):
     try:
-        bank_account = BankAccount.objects.get(pk=account_id)
+        bank_account = BankAccount.objects.get(account=request.account_id)
     except BankAccount.DoesNotExist:
-        return Response({'error': 'Unable to retrieve bank account.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Unable to retrieve transactions.'}, status=status.HTTP_404_NOT_FOUND)
     
     serializer = BankAccountSerializer(bank_account)
     return Response(serializer.data, status=status.HTTP_200_OK)

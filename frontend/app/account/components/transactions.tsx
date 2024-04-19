@@ -7,89 +7,78 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { get_accounts_by_user } from "../../api/account-service";
 
-interface BankAccount {
+interface Transaction {
   id: string;
-  balance: string;
-  type: string;
-  status: boolean;
+  account: string;
+  amount: GLfloat;
+  ttype: string;
+  timestamp: Date;
 }
 
-export default function Transactions() {
-  const [transactions, setTransactions] = useState<BankAccount[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+interface TransactionsList {
+  transactions: Transaction[];
+}
 
-  const fetchAccounts = async () => {
-    try {
-      const response = await get_accounts_by_user();
-      setTransactions(response);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-      setLoading(false);
-    }
+export default function Transactions({ transactions }: TransactionsList) {
+  // Function to format the timestamp
+  const formatTimestamp = (timestamp: Date) => {
+    const date = new Date(timestamp);
+    // Example: "April 18, 2024 12:30 PM"
+    return date.toLocaleString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
   };
 
-  useEffect(() => {
-    fetchAccounts();
-  }, []);
-
   return (
-    <Card className="lg:flex-grow md:w-[500px] sm:w-flex">
+    <Card className="flex-grow lg:flex-grow md:w-[500px] sm:w-flex">
       <CardHeader>
         <CardTitle>Recent Transactions</CardTitle>
       </CardHeader>
       <CardContent>
         <ScrollArea className="lg:h-[700px] md:h-[575px] h-[400px] w-flex rounded-md border">
-          <div className="p-3 grid grid-cols-1 gap-3">
+          <Accordion type="single" collapsible className="w-full">
             {transactions && transactions.length > 0 ? (
               transactions.map((transaction) => (
-                <div key={transaction.id}>
-                    <Card className="cursor-pointer hover:shadow-lg">
-                      <CardContent className="p-4 grid">
-                        <div className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                          <span
-                            className={`flex h-2 w-2 translate-y-1 rounded-full ${
-                                transaction.status ? "bg-red-500" : "bg-blue-500"
-                            }`}
-                          />
-
-                          <div className="space-y-1">
-                            <div className="flex justify-between">
-                              <div>
-                                <p className="text-sm font-medium leading-none">
-                                  Agile Bank {transaction.type} {transaction.id}
-                                </p>
-                                <p className="text-sm font-medium leading-none">
-                                  Current Balance
-                                </p>
-                                <p className="text-sm font-medium">
-                                  ${transaction.balance}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                </div>
+                <AccordionItem key={transaction.id} value={transaction.id} className="w-full p-1 ">
+                  <AccordionTrigger className={`border rounded-md px-3 py-2 justify-between ${transaction.amount < 0 ? 'border-red-500' : 'border-green-500'}`}>
+                    <div className="text-lg">
+                      AGILE-{transaction.ttype.toUpperCase()} {transaction.id}
+                    </div>
+                    <div>{formatTimestamp(transaction.timestamp)}</div>
+                    <div className={`p-2 text-lg ${transaction.amount < 0 ? 'text-red-500' : 'text-green-500'} border rounded-md`}>
+                      {transaction.amount < 0 ? '-' : '+'}${Math.abs(transaction.amount)}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="p-4">
+                    No additional Information
+                  </AccordionContent>
+                </AccordionItem>
               ))
             ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>No Transactions Found</CardTitle>
-                  <CardDescription>
-                    You have no transaction history.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <AccordionItem value="noTransactions" className="w-full p-1">
+                <AccordionTrigger className="border border-blue-500 rounded-md px-3 py-2 justify-between">
+                  <div className="text-lg">NO TRANSACTIONS FOUND</div>
+                </AccordionTrigger>
+                <AccordionContent className="p-4">
+                  Select an account or make a transaction
+                </AccordionContent>
+              </AccordionItem>
             )}
-          </div>
+          </Accordion>
         </ScrollArea>
       </CardContent>
     </Card>

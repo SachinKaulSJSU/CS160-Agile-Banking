@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import serializers
 
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -44,11 +45,12 @@ def deposit(request):
             if serializer.is_valid():
                 serializer.save() 
                 return Response({'message': 'Transaction successfully created.'}, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            raise serializers.ValidationError(serializer.errors)
  
     except BankAccount.DoesNotExist:
-        return Response({'error': 'Bank account not found.'}, status=status.HTTP_404_NOT_FOUND)
-    
+        raise serializers.ValidationError({'error': 'Bank account not found.'})
+
+# Transfer    
 @api_view(['POST'])
 def transfer(request):
     try:
@@ -86,8 +88,8 @@ def transfer(request):
             receiver_account.save()
 
             # Create transactions
-            sender_data = {'account': sender_id, 'amount': -amount}
-            receiver_data = {'account': receiver_id, 'amount': amount}
+            sender_data = {'account': sender_id, 'amount': -amount, 'ttype': "Transfer", 'receiver': receiver_id}
+            receiver_data = {'account': receiver_id, 'amount': amount, 'ttype': "Transfer", 'receiver': sender_id}
             sender_serializer = TransactionSerializer(data=sender_data)
             receiver_serializer = TransactionSerializer(data=receiver_data)
 
@@ -95,11 +97,10 @@ def transfer(request):
                 sender_serializer.save()
                 receiver_serializer.save()
                 return Response({'message': 'Transaction successfully created.'}, status=status.HTTP_201_CREATED)
-            
-            return Response({'error': 'Failed to create transaction.'}, status=status.HTTP_400_BAD_REQUEST)
+            raise serializers.ValidationError(serializer.errors)
 
     except BankAccount.DoesNotExist:
-        return Response({'error': 'One or both bank accounts not found.'}, status=status.HTTP_404_NOT_FOUND)    
+        raise Response({'error': 'One or both bank accounts not found.'}, status=status.HTTP_404_NOT_FOUND)    
 
 # Get all transactions by account
 @api_view(['GET'])

@@ -37,20 +37,28 @@ interface CardInfo {
   accountStatus: (account_id: string) => Promise<void>;
 }
 
+interface Props{
+  selectedAccount: (account_id: string | null) => Promise<void> | void;
+}
+
+
 function SelectableCard({
   account,
   accountStatus,
   selectedCard,
   setSelectedCard,
+  selectedAccount,
 }: {
   account: BankAccount;
   accountStatus: (account_id: string) => Promise<void>;
   selectedCard: CardInfo | null;
   setSelectedCard: React.Dispatch<React.SetStateAction<CardInfo | null>>;
+  selectedAccount: (account_id:string) => Promise<void> | void;
 }) {
   const toggleSelection = () => {
     if (!selectedCard || selectedCard.account !== account) {
       setSelectedCard({ account, accountStatus });
+      selectedAccount(account.id);
     } else {
       setSelectedCard(null);
     }
@@ -113,7 +121,7 @@ function SelectableCard({
   );
 }
 
-export default function Accounts() {
+export default function Accounts({ selectedAccount }: Props) {
   const [selectedCard, setSelectedCard] = useState<CardInfo | null>(null);
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -143,7 +151,7 @@ export default function Accounts() {
   }, []);
 
   return (
-    <Card className="lg:flex-grow md:w-[500px] sm:w-flex">
+    <Card className="flex-grow lg:flex-grow md:w-[500px] sm:w-flex">
       <CardHeader>
         <CardTitle>Accounts</CardTitle>
       </CardHeader>
@@ -164,6 +172,7 @@ export default function Accounts() {
                       selectedCard={selectedCard}
                       setSelectedCard={setSelectedCard}
                       key={account.id}
+                      selectedAccount={selectedAccount}
                     />
                   
                 ))

@@ -73,14 +73,16 @@ export default function TransferForm({ fetchAccounts, accounts }: Props) {
         throw new Error("Please select a recipient account.");
       }
 
-      const sendingAccount = accounts.find((account) => account.id === accountID);
+      const sendingAccount = accounts.find(
+        (account) => account.id === accountID
+      );
 
       if (!sendingAccount) {
         throw new Error("Sending account not found.");
       }
-  
+
       const sendingAccountBalance = parseFloat(sendingAccount.balance);
-  
+
       if (transferAmount > sendingAccountBalance) {
         throw new Error("Insufficient balance in sending account.");
       }
@@ -94,7 +96,11 @@ export default function TransferForm({ fetchAccounts, accounts }: Props) {
       }
 
       // Assuming recipientID is set somewhere in your code
-      await transfer(transferAmount, accountID, recipientID);
+      const response = await transfer(transferAmount, accountID, recipientID);
+      console.log(response.error)
+      if (response.error){
+        throw new Error("Backend error: " + response.error);
+      }
 
       // Display success message
       toast({
@@ -108,7 +114,7 @@ export default function TransferForm({ fetchAccounts, accounts }: Props) {
     } catch (err) {
       toast({
         title: "Uh oh! Unable to transfer.",
-        description: ""+ err,
+        description: "" + err,
         variant: "destructive",
       });
     }
@@ -116,7 +122,7 @@ export default function TransferForm({ fetchAccounts, accounts }: Props) {
 
   return (
     <div>
-      <Toaster/>
+      <Toaster />
       <div className="space-y-3 border border-zinc-200 rounded p-4">
         <p className="text-sm">Select Sending Account</p>
         <Select
@@ -136,10 +142,12 @@ export default function TransferForm({ fetchAccounts, accounts }: Props) {
                     <SelectItem key={account.id} value={account.id}>
                       {account.type} {account.id} Balance: ${account.balance}
                     </SelectItem>
-                  ) : null
+                  ) : (
+                    null
+                  )
                 )
               ) : (
-                <SelectItem value="account_id">
+                <SelectItem value="account_id" disabled>
                   No open bank accounts
                 </SelectItem>
               )}
@@ -166,10 +174,12 @@ export default function TransferForm({ fetchAccounts, accounts }: Props) {
                     <SelectItem key={account.id} value={account.id}>
                       {account.type} {account.id} Balance: ${account.balance}
                     </SelectItem>
-                  ) : null
+                  ) : (
+                    null
+                  )
                 )
               ) : (
-                <SelectItem value="account_id">
+                <SelectItem value="account_id" disabled>
                   No open bank accounts
                 </SelectItem>
               )}
@@ -188,7 +198,7 @@ export default function TransferForm({ fetchAccounts, accounts }: Props) {
           step="200"
         />
 
-        <Button type="submit" onClick={submitTransfer}>
+        <Button type="submit" onClick={submitTransfer} className="bg-blue-600 hover:bg-blue-800">
           Submit
         </Button>
       </div>
