@@ -74,3 +74,28 @@ export const account_transactions = async (account_id) => {
     console.log(err);
   }
 };
+
+export const external_payment = async (amount, account_id, receiver) => {
+  const csrftoken = getCookie("csrftoken");
+  try {
+    const res = await fetch("http://localhost:8000/api/external_payment/", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify({
+        account: account_id,
+        amount: amount,
+        receiver: receiver,
+        ttype: "Payment",
+      }),
+    });
+    const responseData = await res.json();
+    console.log(responseData);
+    return responseData
+  } catch (err) {
+    console.log(err);
+  }
+};

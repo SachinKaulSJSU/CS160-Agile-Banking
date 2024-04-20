@@ -3,12 +3,18 @@ import { logout } from "../../api/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaHouse, FaMoneyCheck, FaLocationDot, FaPiggyBank, FaWrench } from "react-icons/fa6";
+import { useState } from "react";
 
 export default function SideBar() {
   const router = useRouter();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const handleLogout = async () => {
     await logout();
     router.push("/login");
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar state
   };
   return (
     <div>
@@ -22,6 +28,7 @@ export default function SideBar() {
                 data-drawer-target="logo-sidebar"
                 data-drawer-toggle="logo-sidebar"
                 type="button"
+                onClick={toggleSidebar}
               >
                 <span className="sr-only">Open sidebar</span>
                 <svg
@@ -64,7 +71,9 @@ export default function SideBar() {
       </nav>
       <aside
         aria-label="Sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 "
+        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } bg-white border-r border-gray-200 sm:translate-x-0`}
         id="logo-sidebar"
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white">

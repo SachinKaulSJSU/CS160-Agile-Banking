@@ -41,7 +41,11 @@ def deposit(request):
             bank_account.save()
 
             # Create transaction
-            serializer = TransactionSerializer(data=request.data)
+            serializer = TransactionSerializer(data={
+                'amount': amount,
+                'ttype': 'Deposit',
+                'account': account_id,
+            })
             if serializer.is_valid():
                 serializer.save() 
                 return Response({'message': 'Transaction successfully created.'}, status=status.HTTP_201_CREATED)
@@ -49,6 +53,56 @@ def deposit(request):
  
     except BankAccount.DoesNotExist:
         raise serializers.ValidationError({'error': 'Bank account not found.'})
+
+
+# External payment
+@api_view(['POST'])
+def external_payment(request):
+    try:
+        with transaction.atomic():  # Start a database transaction
+            account_id = request.data.get('account')
+            amount_str = request.data.get('amount')
+            receiver = request.data.get('receiver')  # New field for external recipient
+
+            # Validate request data
+            if account_id is None or amount_str is None or receiver is None:
+                return Response({'error': 'Missing account ID, amount, or receiver.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Convert amount string to Decimal
+            try:
+                amount = Decimal(amount_str)
+            except ValueError:
+                return Response({'error': 'Invalid amount format.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Retrieve bank account
+            bank_account = BankAccount.objects.select_for_update().get(id=account_id)
+
+            # Validate amount
+            if amount <= Decimal('0'):
+                return Response({'error': 'Invalid amount.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if amount >= bank_account.balance:
+                return Response({'error': 'Insufficient balance.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Update account balance
+            bank_account.balance -= amount  # Assuming it's a payment, so deduct from balance
+            bank_account.save()
+
+            # Create transaction
+            serializer = TransactionSerializer(data={
+                'amount': -amount,
+                'ttype': 'Payment',
+                'account': account_id,
+                'receiver': receiver,  # Include receiver in the transaction
+            })
+            if serializer.is_valid():
+                serializer.save() 
+                return Response({'message': 'External payment transaction successfully created.'}, status=status.HTTP_201_CREATED)
+            raise serializers.ValidationError(serializer.errors)
+ 
+    except BankAccount.DoesNotExist:
+        raise serializers.ValidationError({'error': 'Bank account not found.'})    
+
 
 # Transfer    
 @api_view(['POST'])

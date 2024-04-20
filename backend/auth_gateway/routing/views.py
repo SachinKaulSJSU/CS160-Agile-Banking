@@ -80,6 +80,20 @@ def get_accounts_by_user(request):
         # Handle any errors that occurred during the request
         return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+# get all accounts via specified id
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def get_accounts_by_username(request, username):
+    try:
+        # Forward the request to the 'get_accounts' endpoint
+        response = session.get(f'{ACCOUNT_URL}/get_accounts_by_username/{username}')
+        
+        return Response(response.json(), status=response.status_code)
+    except requests.RequestException as e:
+        # Handle any errors that occurred during the request
+        return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
+    
 
 # TRANSACTION SERVICE
 # Deposit
@@ -89,6 +103,14 @@ def get_accounts_by_user(request):
 def deposit(request):
     data = request.data
     return post_request(TRANSACTION_URL, 'deposit', data)
+
+# External Payment
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def external_payment(request):
+    data = request.data
+    return post_request(TRANSACTION_URL, 'external_payment', data)
 
 # Transfer money internally
 @api_view(['POST'])

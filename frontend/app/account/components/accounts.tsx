@@ -53,7 +53,7 @@ function SelectableCard({
   accountStatus: (account_id: string) => Promise<void>;
   selectedCard: CardInfo | null;
   setSelectedCard: React.Dispatch<React.SetStateAction<CardInfo | null>>;
-  selectedAccount: (account_id:string) => Promise<void> | void;
+  selectedAccount: (account_id:string | null) => Promise<void> | void;
 }) {
   const toggleSelection = () => {
     if (!selectedCard || selectedCard.account !== account) {
@@ -61,6 +61,7 @@ function SelectableCard({
       selectedAccount(account.id);
     } else {
       setSelectedCard(null);
+      selectedAccount(null);
     }
   };
 

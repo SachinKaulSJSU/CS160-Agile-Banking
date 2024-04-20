@@ -10,6 +10,7 @@ interface Transaction {
   account: string;
   amount: GLfloat;
   ttype: string;
+  receiver: string | null;
   timestamp: Date;
 }
 

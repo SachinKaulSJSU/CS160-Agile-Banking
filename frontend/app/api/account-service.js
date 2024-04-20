@@ -64,6 +64,25 @@ export const get_accounts_by_user = async (data) => {
   }
 };
 
+export const get_accounts_by_username = async (username) => {
+  try {
+    const res = await fetch(`http://localhost:8000/api/get_accounts_by_username/${username}`, {
+      method: "GET",
+      credentials: 'include',
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to fetch accounts");
+    }
+
+    const responseData = await res.json();
+    console.log(responseData);
+    return responseData;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const get_account_by_id = async (id) => {
   try {
     console.log("running");

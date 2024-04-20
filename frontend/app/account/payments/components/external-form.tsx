@@ -11,25 +11,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { get_accounts_by_user } from "../../../api/account-service";
-import { deposit } from "../../../api/transaction-service";
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TransferForm from "./transfer-form";
+import { external_payment } from "../../../api/transaction-service";
+import InternalForm from "./internal-form"
 
 interface BankAccount {
   id: string;
   balance: string;
   type: string;
   status: boolean;
+  user: string;
 }
 
-export default function DepositForm() {
+export default function ExternalForm() {
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
   const [accountID, setAccountID] = useState<string | null>();
   const [amount, setAmount] = useState<string>("");
+  const [receiver, setReceiver] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
@@ -44,6 +46,10 @@ export default function DepositForm() {
     }
   };
 
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const regex = /^\d+(\.\d{1,2})?$/;
     const inputValue = e.target.value;
@@ -57,38 +63,52 @@ export default function DepositForm() {
     console.log(account_id);
   };
 
-  useEffect(() => {
-    fetchAccounts();
-  }, []);
+  const handleReceiverChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setReceiver(e.target.value);
+  };
 
-  const submitDeposit = async () => {
+  const externalPayment = async () => {
     try {
-      const depositAmount = parseFloat(amount);
+      const paymentAmount = parseFloat(amount);
       console.log(accountID);
       if (!accountID) {
         throw new Error("Please select an account.");
       }
-      if (isNaN(depositAmount)) {
-        throw new Error("Invalid deposit amount.");
+      if (isNaN(paymentAmount)) {
+        throw new Error("Invalid payment amount.");
       }
 
-      if (depositAmount <= 0) {
-        throw new Error("Invalid deposit amount.");
+      if (paymentAmount <= 0) {
+        throw new Error("Invalid payment amount.");
       }
 
-      if (depositAmount > 1000000000) {
-        throw new Error("Deposit amount is too large.");
+      const sendingAccount = accounts.find(
+        (account) => account.id === accountID
+      );
+
+      if (!sendingAccount) {
+        throw new Error("Sending account not found.");
       }
 
-      const response = await deposit(depositAmount, accountID);
-      console.log(response.error)
-      if (response.error){
+      const sendingAccountBalance = parseFloat(sendingAccount.balance);
+
+      if (paymentAmount > sendingAccountBalance) {
+        throw new Error("Insufficient balance in account.");
+      }
+
+      if (isNaN(paymentAmount) || paymentAmount <= 0) {
+        throw new Error("Invalid payment amount.");
+      }
+
+      const response = await external_payment(paymentAmount, accountID, receiver);
+      console.log(response.error);
+      if (response.error) {
         throw new Error("Backend error: Bad Request");
       }
 
       toast({
-        title: "Success! Deposit into account.",
-        description: "Amount: " + depositAmount,
+        title: "Success! Payment sent.",
+        description: "Amount: " + paymentAmount,
         variant: "constructive",
       });
       fetchAccounts();
@@ -104,12 +124,12 @@ export default function DepositForm() {
   return (
     <div>
       <Toaster />
-      <Tabs defaultValue="deposit" className="w-flex">
+      <Tabs defaultValue="external" className="w-flex">
         <TabsList>
-          <TabsTrigger value="deposit">Deposit</TabsTrigger>
-          <TabsTrigger value="transfer">Transfer Funds</TabsTrigger>
+          <TabsTrigger value="external">External Payment</TabsTrigger>
+          <TabsTrigger value="internal">Internal Payment</TabsTrigger>
         </TabsList>
-        <TabsContent value="deposit">
+        <TabsContent value="external">
           <div className="space-y-3 border border-zinc-200 rounded p-4">
             <p className="text-sm">Select Account</p>
             <Select
@@ -143,7 +163,7 @@ export default function DepositForm() {
               </SelectContent>
             </Select>
 
-            <p className="text-sm">Deposit Amount</p>
+            <p className="text-sm">Payment Amount</p>
             <Input
               id="amount"
               name="amount"
@@ -154,13 +174,27 @@ export default function DepositForm() {
               step="200"
             />
 
-            <Button type="submit" onClick={submitDeposit} className="bg-blue-600 hover:bg-blue-800">
+            <p className="text-sm">External Recipient</p>
+            <Input
+              id="receiver"
+              name="receiver"
+              type="text"
+              placeholder="Enter external recipient"
+              value={receiver}
+              onChange={handleReceiverChange}
+            />
+
+            <Button
+              type="submit"
+              onClick={externalPayment}
+              className="bg-blue-600 hover:bg-blue-800"
+            >
               Submit
             </Button>
           </div>
         </TabsContent>
-        <TabsContent value="transfer">
-          <TransferForm fetchAccounts={fetchAccounts} accounts={accounts} />
+        <TabsContent value="internal">
+            <InternalForm fetchAccounts={fetchAccounts} accounts={accounts}/>
         </TabsContent>
       </Tabs>
     </div>
