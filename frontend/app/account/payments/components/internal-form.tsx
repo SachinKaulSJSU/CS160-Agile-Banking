@@ -195,12 +195,12 @@ export default function InternalForm({ fetchAccounts, accounts }: Props) {
           </SelectContent>
         </Select>
 
-        <p className="text-sm">Internal Recipient</p>
+        <p className="text-sm">AGILE Recipient Username</p>
         <Input
           id="receiver"
           name="receiver"
           type="text"
-          placeholder="Enter external recipient"
+          placeholder="Enter AGILE recipient"
           value={receiver}
           onChange={handleReceiverChange}
         />

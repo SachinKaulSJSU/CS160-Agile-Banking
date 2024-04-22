@@ -23,10 +23,41 @@ export const login = async (data) => {
         } else {
             // Handle unsuccessful login
             console.error('Login failed:', responseData.error);
-            return null
+            return null;
         }
     } catch (err) {
         console.log(err);
+        return null;
+    }
+}
+
+export const super_login = async (data) => {
+    try {
+        const res = await fetch ('http://localhost:8000/api/super_login/', 
+        {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "username": data.username,
+                "password": data.password,
+            }),
+            credentials: 'include',
+        }
+        );
+        const responseData = await res.json()
+        if (res.ok) {
+            console.log('Login successful');
+            return responseData;
+        } else {
+            // Handle unsuccessful login
+            console.error('Login failed:', responseData.error);
+            return null;
+        }
+    } catch (err) {
+        console.log(err);
+        return null;
     }
 }
 
@@ -66,7 +97,7 @@ export const valid_session = async (data) => {
     try {
         const res = await fetch ('http://localhost:8000/api/valid_session/', 
         {
-            method:'POST',
+            method:'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken

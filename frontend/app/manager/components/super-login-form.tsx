@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
-import { login } from "../api/auth";
+import { super_login } from "../../api/auth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
@@ -16,7 +16,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (isSuccess) {
-      router.push("/account");
+      router.push("/manager/dashboard");
     }
   }, [isSuccess]);
 
@@ -27,24 +27,16 @@ export default function LoginForm() {
     }));
   };
 
-  const unsuccessfulLogin = () => {
-    toast({
-      title: "Login unsuccessful",
-      description: "Please provide a valid username or password",
-      variant: "destructive",
-    });
-  };
-
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await login(formData);
+      const response = await super_login(formData);
       console.log(response)
       if (response.error){
         throw new Error("Bad Request: Invalid Credentials");
       }
       toast({
-        title: "Login Successful!",
+        title: "Login successful!",
         description: "Valid credentials!",
         variant: "constructive",
       });
@@ -137,9 +129,9 @@ export default function LoginForm() {
 
         <a
           className="button w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-transparent text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none"
-          href="/enroll"
+          href="/"
         >
-          Enroll
+          Home
         </a>
       </div>
     </form>
