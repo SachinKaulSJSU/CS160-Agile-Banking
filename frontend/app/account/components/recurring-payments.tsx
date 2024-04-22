@@ -16,20 +16,22 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import React, { useState, useEffect } from "react";
 
-interface Transaction {
+interface RecurringPayment {
   id: string;
   account: string;
   amount: GLfloat;
-  ttype: string;
+  frequency: string;
   receiver: string | null;
   timestamp: Date;
 }
 
-interface TransactionsList {
-  transactions: Transaction[];
+interface RecurringPaymentsList {
+  recurrings: RecurringPayment[];
 }
 
-export default function Transactions({ transactions }: TransactionsList) {
+export default function RecurringPayments({
+  recurrings,
+}: RecurringPaymentsList) {
   // Function to format the timestamp
   const formatDetailedTimestamp = (timestamp: Date) => {
     const date = new Date(timestamp);
@@ -57,72 +59,52 @@ export default function Transactions({ transactions }: TransactionsList) {
   return (
     <Card className="flex-grow lg:flex-grow md:w-[500px] sm:w-flex">
       <CardHeader>
-        <CardTitle>Transactions</CardTitle>
+        <CardTitle>Recurring Payments</CardTitle>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="lg:h-[700px] md:h-[575px] h-[400px] w-flex rounded-md border">
+        <ScrollArea className="lg:h-[296px] h-[250px] w-flex rounded-md border">
           <Accordion type="single" collapsible className="w-full">
-            {transactions && transactions.length > 0 ? (
-              transactions
+            {recurrings && recurrings.length > 0 ? (
+              recurrings
                 .slice()
                 .sort(
                   (a, b) =>
                     new Date(b.timestamp).getTime() -
                     new Date(a.timestamp).getTime()
                 )
-                .map((transaction) => (
+                .map((recurring) => (
                   <AccordionItem
-                    key={transaction.id}
-                    value={transaction.id}
+                    key={recurring.id}
+                    value={recurring.id}
                     className="w-full p-1 flex flex-col"
                   >
-                    <AccordionTrigger
-                      className={`border rounded-md px-3 py-2 flex justify-between ${
-                        transaction.amount < 0
-                          ? "border-red-500"
-                          : "border-green-500"
-                      }`}
-                    >
+                    <AccordionTrigger className="border rounded-md px-3 py-2 flex justify-between border-violet-500">
                       <div className="flex items-center">
                         <div className="text-md sm:text-lg mr-2">
-                          AB-{transaction.ttype.toUpperCase()} {transaction.id}
+                          AB-{recurring.frequency.toUpperCase()} {recurring.id}
                         </div>
                         <div className="text-sm hidden md:block">
-                          {formatSimpleTimestamp(transaction.timestamp)}
+                          {formatSimpleTimestamp(recurring.timestamp)}
                         </div>
                       </div>
-                      <div
-                        className={`p-2 text-md sm:text-lg ${
-                          transaction.amount < 0
-                            ? "text-red-500"
-                            : "text-green-500"
-                        } border rounded-md`}
-                      >
-                        {transaction.amount < 0 ? "-" : "+"}$
-                        {Math.abs(transaction.amount).toFixed(2)}
+                      <div className="p-2 text-md sm:text-lg border rounded-md">
+                        ${recurring.amount}
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="p-4">
-                      {transaction.receiver !== "" ? (
+                      {recurring.receiver !== "" ? (
                         <div>
-                          <div>Transaction ID: {transaction.id}</div>
+                          <div>Recurring ID: {recurring.id}</div>
                           <div>
-                            Time:{" "}
-                            {formatDetailedTimestamp(transaction.timestamp)}
+                            Time: {formatDetailedTimestamp(recurring.timestamp)}
                           </div>
-                          <div>
-                            {transaction.amount < 0
-                              ? "Sent to"
-                              : "Received from"}{" "}
-                            Account: {transaction.receiver}
-                          </div>
+                          <div>Sends to: {recurring.receiver}</div>
                         </div>
                       ) : (
                         <div>
-                          <div>Transaction ID: {transaction.id}</div>
+                          <div>Transaction ID: {recurring.id}</div>
                           <div>
-                            Time:{" "}
-                            {formatDetailedTimestamp(transaction.timestamp)}
+                            Time: {formatDetailedTimestamp(recurring.timestamp)}
                           </div>
                         </div>
                       )}
@@ -131,11 +113,11 @@ export default function Transactions({ transactions }: TransactionsList) {
                 ))
             ) : (
               <AccordionItem value="noTransactions" className="w-full p-1">
-                <AccordionTrigger className="border border-blue-500 rounded-md px-3 py-2 justify-between">
-                  <div className="text-lg">NO TRANSACTIONS FOUND</div>
+                <AccordionTrigger className="border border-violet-500 rounded-md px-3 py-2 justify-between">
+                  <div className="text-lg">NO RECURRING PAYMENTS</div>
                 </AccordionTrigger>
                 <AccordionContent className="p-4">
-                  Select an account or make a transaction
+                  Select an account or make a recurring payment
                 </AccordionContent>
               </AccordionItem>
             )}

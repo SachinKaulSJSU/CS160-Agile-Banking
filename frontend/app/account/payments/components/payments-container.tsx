@@ -1,6 +1,5 @@
 import PaymentsCard from './payments-card'
 
-
 export default function PaymentsContainer() {
   return (
     <div>

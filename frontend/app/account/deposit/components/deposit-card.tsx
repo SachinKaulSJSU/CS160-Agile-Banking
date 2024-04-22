@@ -13,9 +13,9 @@ export default function DepositCard() {
   
   
   return (
-    <Card className="lg:flex-grow md:w-[500px] sm:w-flex">
+    <Card className="flex-grow file:lg:flex-grow md:w-[500px] sm:w-flex">
       <CardHeader>
-        <CardTitle>Deposit</CardTitle>
+        <CardTitle>Manage Funds</CardTitle>
       </CardHeader>
       <CardContent>
         <DepositForm />

@@ -1,8 +1,67 @@
+"use client";
 import Accounts from "./accounts";
 import Transactions from "./transactions";
-import SelectedAccount from "./selected-account";
+import RecurringPayments from "./recurring-payments";
+import React, { useState, useEffect } from "react";
+import {
+  account_transactions,
+  account_recurrings,
+} from "../../api/transaction-service";
+
+interface Transaction {
+  id: string;
+  account: string;
+  amount: GLfloat;
+  ttype: string;
+  receiver: string | null;
+  timestamp: Date;
+}
+
+interface RecurringPayment {
+  id: string;
+  account: string;
+  amount: GLfloat;
+  frequency: string;
+  receiver: string | null;
+  timestamp: Date;
+}
 
 export default function AccountContainer() {
+  const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [recurrings, setRecurrings] = useState<RecurringPayment[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchTransactions = async (id: string | null) => {
+    try {
+      const response = await account_transactions(id);
+      console.log(response);
+      setTransactions(response);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      setLoading(false);
+    }
+  };
+
+  const fetchRecurrings = async (id: string | null) => {
+    try {
+      const response = await account_recurrings(id);
+      console.log(response);
+      setRecurrings(response);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching recurring payments:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleSelection = async (account_id: string | null) => {
+    setSelectedAccount(account_id);
+    fetchTransactions(account_id);
+    fetchRecurrings(account_id);
+  };
+
   return (
     <div>
       <div className="p-4 sm:ml-64">
@@ -86,14 +145,14 @@ export default function AccountContainer() {
         </p>
       </div> */}
           <div className="grid 2xl:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1 gap-4 mb-4">
-            <div className="flex items-center justify-center 2xl:col-span-1 lg:col-span-2 sm:col-span-1">
-              <Accounts />
+            <div className="flex items-center justify-center 2xl:col-span-1 lg:col-span-3 sm:col-span-1 ">
+              <Accounts selectedAccount={handleSelection} />
             </div>
-            <div className="flex items-center justify-center col-span-1">
-              <SelectedAccount />
+            <div className="flex items-center justify-center 2xl:col-span-1 lg:col-span-3 sm:col-span-1 ">
+              <RecurringPayments recurrings={recurrings} />
             </div>
             <div className="flex items-center justify-center 2xl:col-span-2 lg:col-span-3 sm:col-span-1">
-              <Transactions />
+              <Transactions transactions={transactions} />
             </div>
           </div>
         </div>

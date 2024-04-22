@@ -24,12 +24,6 @@ export default function Header() {
             ATMs/Locations
           </a>
           <a
-            href="/deposit"
-            className="text-sm font-semibold leading-6 text-gray-900 hovereffect"
-          >
-            Deposit
-          </a>
-          <a
             href="aboutus"
             className="text-sm font-semibold leading-6 text-gray-900 hovereffect"
           >

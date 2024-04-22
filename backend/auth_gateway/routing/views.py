@@ -17,9 +17,12 @@ def post_request(url, endpoint, data):
     try:
         response = session.post(f'{url}/{endpoint}/', data=data)
         response.raise_for_status()
+        
+        # Add logging to inspect response content
+        print("Response content:", response.content)
         return Response(response.json(), status=response.status_code)
     except requests.HTTPError as e:
-        return Response({'error': f'{e}: {e.response.json()}'}, status=e.response.status_code)
+        return Response({'error': f'{e}'}, status=e.response.status_code)
     except requests.RequestException as e:
         return Response({'error': f'{e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -30,7 +33,7 @@ def get_request(url, endpoint, user_id):
         response.raise_for_status()
         return Response(response.json(), status=response.status_code)
     except requests.HTTPError as e:
-        return Response({'error': f'{e}: {e.response.json()}'}, status=e.response.status_code)
+        return Response({'error': f'{e}'}, status=e.response.status_code)
     except requests.RequestException as e:
         return Response({'error': f'{e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -77,13 +80,80 @@ def get_accounts_by_user(request):
         # Handle any errors that occurred during the request
         return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+# get all accounts via specified id
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def get_accounts_by_username(request, username):
+    try:
+        # Forward the request to the 'get_accounts' endpoint
+        response = session.get(f'{ACCOUNT_URL}/get_accounts_by_username/{username}')
+        
+        return Response(response.json(), status=response.status_code)
+    except requests.RequestException as e:
+        # Handle any errors that occurred during the request
+        return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
+    
 
 # TRANSACTION SERVICE
+# Deposit
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def deposit(request):
     data = request.data
     return post_request(TRANSACTION_URL, 'deposit', data)
+
+# External Payment
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def external_payment(request):
+    data = request.data
+    return post_request(TRANSACTION_URL, 'external_payment', data)
+
+# Transfer money internally
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def transfer(request):
+    data = request.data
+    return post_request(TRANSACTION_URL, 'transfer', data)
+
+# Get all accounts by account id
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def account_transactions(request, account_id):
+    try:
+        # Forward the request to the 'get_accounts' endpoint
+        response = session.get(f'{TRANSACTION_URL}/account_transactions/{account_id}')
+        
+        return Response(response.json(), status=response.status_code)
+    except requests.RequestException as e:
+        # Handle any errors that occurred during the request
+        return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+# Get all recurring payments by account
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def account_recurrings(request, account_id):
+    try:
+        # Forward the request to the 'get_accounts' endpoint
+        response = session.get(f'{TRANSACTION_URL}/account_recurrings/{account_id}')
+        
+        return Response(response.json(), status=response.status_code)
+    except requests.RequestException as e:
+        # Handle any errors that occurred during the request
+        return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+# Create recurring payment
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def recurring_payment(request):
+    data = request.data
+    return post_request(TRANSACTION_URL, 'recurring_payment', data)
 
     
