@@ -38,6 +38,32 @@ def login(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Manager Login
+@api_view(['POST'])
+def super_login(request):
+    serializer = LoginSerializer(data=request.data)
+    
+    if serializer.is_valid():
+        username = serializer.validated_data.get('username')
+        password = serializer.validated_data.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None and user.is_superuser:
+            try:
+                asyncio.run(alogin(request, user))
+
+                # Construct response for superuser
+                response_data = {
+                    'message': 'Login successful as superuser',
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        else: 
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 # logout
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
@@ -46,10 +72,25 @@ def logout(request):
     asyncio.run(alogout(request))
     return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 
-# valid session id
-@api_view(['POST'])
+# valid session
+@api_view(['GET'])
 def valid_session(request):
     if request.user.is_authenticated:
-        return Response({'valid': True})
+        return Response({'valid': True, 'user': request.user.id}, status=status.HTTP_200_OK)
     else:
-        return Response({'valid': False}, status=status.HTTP_401_UNAUTHORIZED)
+        # Retrieve sessionid from cookies
+        sessionid = request.COOKIES.get('sessionid')
+        if sessionid:
+            # Sessionid exists but user is not authenticated
+            return Response({'valid': False, 'message': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            # No sessionid found in cookies
+            return Response({'valid': False, 'message': 'No sessionid found'}, status=status.HTTP_400_BAD_REQUEST)
+
+# valid super user    
+@api_view(['GET'])
+def valid_manager(request):
+    if request.user.is_superuser:
+        return Response({'valid': True}, status=status.HTTP_200_OK)
+    else:
+        return Response({'valid': False}, status=status.HTTP_400_BAD_REQUEST)    

@@ -21,7 +21,6 @@ interface BankAccount {
   balance: string;
   type: string;
   status: boolean;
-  user: string;
 }
 
 interface Props {
