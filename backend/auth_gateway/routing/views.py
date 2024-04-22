@@ -133,5 +133,27 @@ def account_transactions(request, account_id):
     except requests.RequestException as e:
         # Handle any errors that occurred during the request
         return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+# Get all recurring payments by account
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def account_recurrings(request, account_id):
+    try:
+        # Forward the request to the 'get_accounts' endpoint
+        response = session.get(f'{TRANSACTION_URL}/account_recurrings/{account_id}')
+        
+        return Response(response.json(), status=response.status_code)
+    except requests.RequestException as e:
+        # Handle any errors that occurred during the request
+        return Response({'error': f'Error fetching bank accounts: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+# Create recurring payment
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def recurring_payment(request):
+    data = request.data
+    return post_request(TRANSACTION_URL, 'recurring_payment', data)
 
     

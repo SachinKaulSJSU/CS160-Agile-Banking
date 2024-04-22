@@ -16,11 +16,11 @@ export default function PaymentsCard() {
   return (
     <Card className="flex-grow lg:flex-grow md:w-[500px] sm:w-flex">
       <CardHeader>
-        <CardTitle>External or Internal Payment</CardTitle>
-        <CardDescription>Make an external payment or an internal payment to another AGILE account.</CardDescription>
+        <CardTitle>Payment</CardTitle>
+        <CardDescription>Make an external payment or an internal payment to another AGILE account or set up a recurring payment.</CardDescription>
       </CardHeader>
       <CardContent>
-          <ExternalForm />
+        <ExternalForm />
       </CardContent>
     </Card>
   );

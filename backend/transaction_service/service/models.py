@@ -43,15 +43,13 @@ class Transaction(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
 
-class ReccurringPayment(models.Model):
+class RecurringPayment(models.Model):
     amount = models.DecimalField(max_digits=65, decimal_places=2, default=0.00)
     account = models.ForeignKey(BankAccount, on_delete=models.CASCADE)
     receiver = models.CharField(max_length=65)    
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    # minutely for testing purposes
     FREQUENCY_CHOICES = [
-        ('minutely', 'Minutely'),
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),
         ('monthly', 'Monthly'),

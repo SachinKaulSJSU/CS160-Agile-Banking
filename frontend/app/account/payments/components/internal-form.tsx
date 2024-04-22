@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { transfer } from "../../../api/transaction-service";
+import { internal_payment } from "../../../api/transaction-service";
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -138,7 +138,7 @@ export default function InternalForm({ fetchAccounts, accounts }: Props) {
       }
 
       // Assuming recipientID is set somewhere in your code
-      const response = await transfer(paymentAmount, accountID, recipientID);
+      const response = await internal_payment(paymentAmount, accountID, recipientID);
       console.log(response.error);
       if (response.error) {
         throw new Error("Backend error: " + response.error);

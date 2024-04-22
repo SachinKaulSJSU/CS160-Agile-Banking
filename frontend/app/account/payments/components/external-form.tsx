@@ -17,7 +17,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { external_payment } from "../../../api/transaction-service";
-import InternalForm from "./internal-form"
+import InternalForm from "./internal-form";
+import RecurringForm from "./recurring-form"
+
 
 interface BankAccount {
   id: string;
@@ -128,6 +130,7 @@ export default function ExternalForm() {
         <TabsList>
           <TabsTrigger value="external">External Payment</TabsTrigger>
           <TabsTrigger value="internal">Internal Payment</TabsTrigger>
+          <TabsTrigger value="recurring">Recurring Payment</TabsTrigger>
         </TabsList>
         <TabsContent value="external">
           <div className="space-y-3 border border-zinc-200 rounded p-4">
@@ -195,6 +198,9 @@ export default function ExternalForm() {
         </TabsContent>
         <TabsContent value="internal">
             <InternalForm fetchAccounts={fetchAccounts} accounts={accounts}/>
+        </TabsContent>
+        <TabsContent value="recurring">
+            <RecurringForm fetchAccounts={fetchAccounts} accounts={accounts}/>
         </TabsContent>
       </Tabs>
     </div>

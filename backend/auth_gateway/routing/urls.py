@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register, create_account, account_status, get_accounts_by_user, deposit, transfer, account_transactions, external_payment, get_accounts_by_username
+from .views import register, create_account, account_status, get_accounts_by_user, deposit, transfer, account_transactions, external_payment, get_accounts_by_username, account_recurrings, recurring_payment
 
 urlpatterns = [
     path('register/', register),
@@ -11,4 +11,6 @@ urlpatterns = [
     path('external_payment/', external_payment),
     path('get_accounts_by_username/<str:username>', get_accounts_by_username),
     path('account_transactions/<int:account_id>', account_transactions),
+    path('account_recurrings/<int:account_id>', account_recurrings),
+    path('recurring_payment/', recurring_payment)
 ]

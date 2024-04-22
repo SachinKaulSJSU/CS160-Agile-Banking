@@ -6,8 +6,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.db import transaction
 
-from .serializer import TransactionSerializer
-from service.models import BankAccount, Transaction
+from .serializer import TransactionSerializer, RecurringPaymentSerializer
+from service.models import BankAccount, Transaction, RecurringPayment
 from decimal import Decimal
 
 
@@ -112,6 +112,7 @@ def transfer(request):
             sender_id = request.data.get('account')
             receiver_id = request.data.get('receiver')
             amount_str = request.data.get('amount')
+            ttype = request.data.get('ttype')
 
             # Validate request data
             if sender_id is None or receiver_id is None or amount_str is None:
@@ -142,8 +143,8 @@ def transfer(request):
             receiver_account.save()
 
             # Create transactions
-            sender_data = {'account': sender_id, 'amount': -amount, 'ttype': "Transfer", 'receiver': receiver_id}
-            receiver_data = {'account': receiver_id, 'amount': amount, 'ttype': "Transfer", 'receiver': sender_id}
+            sender_data = {'account': sender_id, 'amount': -amount, 'ttype': ttype, 'receiver': receiver_id}
+            receiver_data = {'account': receiver_id, 'amount': amount, 'ttype': ttype, 'receiver': sender_id}
             sender_serializer = TransactionSerializer(data=sender_data)
             receiver_serializer = TransactionSerializer(data=receiver_data)
 
@@ -171,3 +172,56 @@ def account_transactions(request, account_id):
     
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Create recurring payment    
+@api_view(['POST'])
+def recurring_payment(request):
+    try:
+        account_id = request.data.get('account')
+        amount_str = request.data.get('amount')
+        receiver = request.data.get('receiver') 
+        # Validate request data
+        if account_id is None or amount_str is None or receiver is None:
+            return Response({'error': 'Missing account ID, amount, or receiver.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Convert amount string to Decimal
+        try:
+            amount = Decimal(amount_str)
+        except ValueError:
+            return Response({'error': 'Invalid amount format.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+        # Retrieve bank account
+        bank_account = BankAccount.objects.get(id=account_id)
+
+        # Validate amount
+        if amount <= Decimal('0'):
+            return Response({'error': 'Invalid amount.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if amount >= bank_account.balance:
+            return Response({'error': 'Insufficient balance.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = RecurringPaymentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save() 
+            return Response({'message': 'External payment transaction successfully created.'}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    except BankAccount.DoesNotExist:
+        raise serializers.ValidationError({'error': 'Bank account not found.'})
+
+# Get all transactions by account
+@api_view(['GET'])
+def account_recurrings(request, account_id):
+    try:
+        # Retrieve all transactions belonging to the specified account
+        recurrings = RecurringPayment.objects.filter(account=account_id)
+        
+        # Serialize the transactions
+        serializer = RecurringPaymentSerializer(recurrings, many=True)
+        
+        # Return the serialized data
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)       
