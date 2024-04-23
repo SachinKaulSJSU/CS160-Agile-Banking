@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "description": "Online banking application",
     "scripts": {
+        "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
         "backend:auth": "python backend/auth_gateway/manage.py runserver 8000",
         "backend:user": "python backend/user_service/manage.py runserver 8001",
         "backend:account": "python backend/account_service/manage.py runserver 8002",
