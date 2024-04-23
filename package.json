@@ -12,9 +12,11 @@
         "backend:migrate:account": "cd backend/account_service && python manage.py makemigrations && python manage.py migrate",
         "backend:migrate:transaction": "cd backend/transaction_service && python manage.py makemigrations && python manage.py migrate",
         "backend:mono": "cd backend/services && python manage.py runserver",
-        "migrate": "npm run backend:migrate:auth && npm run backend:migrate:user && npm run backend:migrate:account && npm run backend:migrate:transaction",
+        "migrate:micro": "npm run backend:migrate:auth && npm run backend:migrate:user && npm run backend:migrate:account && npm run backend:migrate:transaction",
         "frontend": "npm run dev --prefix frontend",
         "micro": "concurrently \"npm run backend:auth\" \"npm run backend:user\" \"npm run backend:account\" \"npm run backend:transaction\" \"npm run frontend\"",
+        "migrate:mac": "cd backend/services && python3 manage.py makemigrations && python3 manage.py migrate",
+        "migrate:windows": "cd backend/services && python manage.py makemigrations && python manage.py migrate",
         "dev": "concurrently \"npm run frontend\" \"npm run backend:mono\""
     }, 
     "devDependencies": {
