@@ -1,6 +1,5 @@
 import Header from "../components/header";
 import Footer from "../components/footer";
-import LocationContainer from "./components/location-container";
 import Map from "./components/map";
 import CSS from "csstype";
 

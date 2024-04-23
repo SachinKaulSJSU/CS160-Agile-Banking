@@ -19,7 +19,14 @@ export default function LocationCard() {
             Search by Zip Code or Current Location
           </div>
           <div className="w-100 flex justify-center">
+<<<<<<< Updated upstream
             <Map/>
+=======
+            
+            <Map />
+
+
+>>>>>>> Stashed changes
           </div>
         </div>
       </div>
