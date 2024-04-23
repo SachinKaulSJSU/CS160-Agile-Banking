@@ -164,7 +164,6 @@ export default function AccountDialog({ refreshAccounts }: Refresh) {
             placeholder="Initial Deposit"
             value={balance}
             onChange={handleChange}
-            defaultValue="200"
             step="200"
           />
         </div>
