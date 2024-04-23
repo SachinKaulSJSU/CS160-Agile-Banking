@@ -1,6 +1,10 @@
-import Map from "./map";
+"use client"
+import React, {Component} from 'react';
+import Map from './map';
 
 export default function LocationCard() {
+
+
     return (
       <div className="lg:max-w-lg lg:mx-auto ms-auto justify-center">
         <div className="p-4 sm:p-7 flex flex-col bg-white rounded-2xl shadow-lg">
@@ -15,13 +19,7 @@ export default function LocationCard() {
             Search by Zip Code or Current Location
           </div>
           <div className="w-100 flex justify-center">
-            
-            <Map />
-
-            <script
-              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmIv1uVuHXSitT86XPl3FnZ6RwjoiTdhY&callback=initMap&libraries=places&v=weekly"
-              defer
-            ></script>
+            <Map/>
           </div>
         </div>
       </div>
