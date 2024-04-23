@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
+from auth_service.models import Address
 
 from .serializer import BankAccountSerializer
 from .models import BankAccount
@@ -75,11 +76,45 @@ def get_accounts_by_username(request, username):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-def get_account_by_id(request):
+def get_account_by_id(request, account_id):
     try:
-        bank_account = BankAccount.objects.get(account=request.account_id)
+        bank_account = BankAccount.objects.get(pk=account_id)
     except BankAccount.DoesNotExist:
-        return Response({'error': 'Unable to retrieve transactions.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Bank account not found.'}, status=status.HTTP_404_NOT_FOUND)
     
     serializer = BankAccountSerializer(bank_account)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_by_account(request, account_id):
+    try:
+        bank_account = BankAccount.objects.get(pk=account_id)
+    except BankAccount.DoesNotExist:
+        return Response({'error': 'Bank account not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    user_id = bank_account.user_id
+
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        address = Address.objects.get(user_id=user_id)
+    except Address.DoesNotExist:
+        address = None
+    
+    user_data = {
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'email': user.email,
+        'address': {
+            'street_address': address.street_address if address else None,
+            'city': address.city if address else None,
+            'state': address.state if address else None,
+            'postal_code': address.postal_code if address else None,
+        }
+    }
+    return Response(user_data, status=status.HTTP_200_OK)

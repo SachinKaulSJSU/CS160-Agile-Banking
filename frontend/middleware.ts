@@ -23,7 +23,6 @@ export async function middleware(request: NextRequest) {
       });
 
       const session = await response.json();
-      console.log(session);
 
       const managerResponse = await fetch("http://localhost:8000/api/valid_manager/", {
         method: "GET",

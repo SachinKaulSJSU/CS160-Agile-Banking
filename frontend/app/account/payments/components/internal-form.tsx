@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { get_accounts_by_username } from "../../../api/account-service";
+import { Label } from "@/components/ui/label";
 
 interface BankAccount {
   id: string;
@@ -50,7 +51,7 @@ export default function InternalForm({ fetchAccounts, accounts }: Props) {
 
   const handleAccountChange = (account_id: string) => {
     if (account_id == recipientID) {
-        setRecipientID("");
+      setRecipientID("");
     }
     setAccountID(account_id);
     console.log(account_id);
@@ -68,7 +69,7 @@ export default function InternalForm({ fetchAccounts, accounts }: Props) {
   const fetchRecipientAccounts = async (username: string | null) => {
     try {
       const response = await get_accounts_by_username(username);
-      
+
       setRecipientAccounts(response);
       setLoading(false);
     } catch (error) {
@@ -138,7 +139,11 @@ export default function InternalForm({ fetchAccounts, accounts }: Props) {
       }
 
       // Assuming recipientID is set somewhere in your code
-      const response = await internal_payment(paymentAmount, accountID, recipientID);
+      const response = await internal_payment(
+        paymentAmount,
+        accountID,
+        recipientID
+      );
       console.log(response.error);
       if (response.error) {
         throw new Error("Backend error: " + response.error);
@@ -166,92 +171,98 @@ export default function InternalForm({ fetchAccounts, accounts }: Props) {
     <div>
       <Toaster />
       <div className="space-y-3 border border-zinc-200 rounded p-4">
-        <p className="text-sm">Select Sending Account</p>
-        <Select
-          name="account"
-          onValueChange={handleAccountChange}
-          defaultValue=""
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select sending account" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Bank Accounts</SelectLabel>
-              {accounts && accounts.length > 0 ? (
-                accounts.map((account) =>
-                  account.status === false ? (
-                    <SelectItem key={account.id} value={account.id}>
-                      {account.type} {account.id} Balance: ${account.balance}
-                    </SelectItem>
-                  ) : null
-                )
-              ) : (
-                <SelectItem value="account_id" disabled>
-                  No open bank accounts
-                </SelectItem>
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-
-        <p className="text-sm">AGILE Recipient Username</p>
-        <Input
-          id="receiver"
-          name="receiver"
-          type="text"
-          placeholder="Enter AGILE recipient"
-          value={receiver}
-          onChange={handleReceiverChange}
-        />
+        <div className="mb-4">
+          <Label htmlFor="account">Select Sending Account</Label>
+          <Select
+            name="account"
+            onValueChange={handleAccountChange}
+            defaultValue=""
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select sending account" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Bank Accounts</SelectLabel>
+                {accounts && accounts.length > 0 ? (
+                  accounts.map((account) =>
+                    account.status === false ? (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.type} {account.id} Balance: ${account.balance}
+                      </SelectItem>
+                    ) : null
+                  )
+                ) : (
+                  <SelectItem value="account_id" disabled>
+                    No open bank accounts
+                  </SelectItem>
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="mb-4">
+          <Label htmlFor="receiver">AGILE Reciepient Username</Label>
+          <Input
+            id="receiver"
+            name="receiver"
+            type="text"
+            placeholder="Enter AGILE recipient"
+            value={receiver}
+            onChange={handleReceiverChange}
+          />
+        </div>
         <Button
           type="submit"
           onClick={findAccounts}
-          className="bg-blue-600 hover:bg-blue-800"
+          className="bg-violet-400 hover:bg-violet-600"
         >
           Find Accounts
         </Button>
 
-        <p className="text-sm">Select Recipient Account</p>
-        <Select
-          name="account"
-          onValueChange={handleRecipientChange}
-          defaultValue=""
-          disabled={accountID === ""}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select recipient account" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Bank Accounts</SelectLabel>
-              {recipientAccounts && recipientAccounts.length > 0 ? (
-                recipientAccounts.map((account) =>
-                  account.status === false && account.id !== accountID ? (
-                    <SelectItem key={account.id} value={account.id}>
-                      {account.type} {account.id}
-                    </SelectItem>
-                  ) : null
-                )
-              ) : (
-                <SelectItem value="account_id" disabled>
-                  No open bank accounts
-                </SelectItem>
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-
-        <p className="text-sm">Transfer Amount</p>
-        <Input
-          id="amount"
-          name="amount"
-          type="number"
-          placeholder="Enter amount"
-          value={amount}
-          onChange={handleChange}
-          step="200"
-        />
+        <div className="mb-4">
+          <Label htmlFor="account">Select Recipient Account</Label>
+          <Select
+            name="account"
+            onValueChange={handleRecipientChange}
+            defaultValue=""
+            disabled={accountID === ""}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select recipient account" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Bank Accounts</SelectLabel>
+                {recipientAccounts && recipientAccounts.length > 0 ? (
+                  recipientAccounts.map((account) =>
+                    account.status === false && account.id !== accountID ? (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.type} {account.id}
+                      </SelectItem>
+                    ) : null
+                  )
+                ) : (
+                  <SelectItem value="account_id" disabled>
+                    No open bank accounts
+                  </SelectItem>
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="mb-4">
+          <Label htmlFor="amount">Transfer Amount</Label>
+          <Input
+            id="amount"
+            name="amount"
+            type="number"
+            placeholder="Enter amount"
+            value={amount}
+            onChange={handleChange}
+            step="200"
+          />
+        </div>
 
         <Button
           type="submit"

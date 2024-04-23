@@ -103,7 +103,7 @@ export default function Transactions({ transactions }: TransactionsList) {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="p-4">
-                      {transaction.receiver !== "" ? (
+                      {transaction.receiver !== "" && transaction.receiver ? (
                         <div>
                           <div>Transaction ID: {transaction.id}</div>
                           <div>
@@ -114,7 +114,7 @@ export default function Transactions({ transactions }: TransactionsList) {
                             {transaction.amount < 0
                               ? "Sent to"
                               : "Received from"}{" "}
-                            Account: {transaction.receiver}
+                            Account: {transaction.receiver.toUpperCase()}
                           </div>
                         </div>
                       ) : (

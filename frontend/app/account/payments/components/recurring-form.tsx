@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { recurring_payment } from "../../../api/transaction-service";
+import { Label } from "@/components/ui/label";
 
 interface BankAccount {
   id: string;
@@ -46,8 +47,8 @@ export default function RecurringForm({ fetchAccounts, accounts }: Props) {
   };
 
   const handlePaymentIntervalChange = (interval: string) => {
-    setFrequency(interval)
-  }
+    setFrequency(interval);
+  };
 
   const handleAccountChange = (account_id: string) => {
     setAccountID(account_id);
@@ -95,7 +96,7 @@ export default function RecurringForm({ fetchAccounts, accounts }: Props) {
         paymentAmount,
         accountID,
         receiver,
-        frequency,
+        frequency
       );
       console.log(response.error);
       if (response.error) {
@@ -125,76 +126,84 @@ export default function RecurringForm({ fetchAccounts, accounts }: Props) {
     <div>
       <Toaster />
       <div className="space-y-3 border border-zinc-200 rounded p-4">
-        <p className="text-sm">Select Account</p>
-        <Select
-          name="account"
-          onValueChange={handleAccountChange}
-          defaultValue=""
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select a bank account" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Bank Accounts</SelectLabel>
-              {accounts && accounts.length > 0 ? (
-                accounts.map((account) =>
-                  account.status === false ? (
-                    <SelectItem key={account.id} value={account.id}>
-                      {account.type} {account.id} Balance: ${account.balance}
-                    </SelectItem>
-                  ) : null
-                )
-              ) : (
-                <SelectItem value="noAccount" className="disabled" disabled>
-                  No open bank accounts
-                </SelectItem>
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <div className="mb-4">
+          <Label htmlFor="account">Select Account</Label>
+          <Select
+            name="account"
+            onValueChange={handleAccountChange}
+            defaultValue=""
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a bank account" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Bank Accounts</SelectLabel>
+                {accounts && accounts.length > 0 ? (
+                  accounts.map((account) =>
+                    account.status === false ? (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.type} {account.id} Balance: ${account.balance}
+                      </SelectItem>
+                    ) : null
+                  )
+                ) : (
+                  <SelectItem value="noAccount" className="disabled" disabled>
+                    No open bank accounts
+                  </SelectItem>
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
 
-        <p className="text-sm">Payment Amount</p>
-        <Input
-          id="amount"
-          name="amount"
-          type="number"
-          placeholder="Enter amount"
-          value={amount}
-          onChange={handleChange}
-          step="200"
-        />
+        <div className="mb-4">
+          <Label htmlFor="amount">Payment Amount</Label>
+          <Input
+            id="amount"
+            name="amount"
+            type="number"
+            placeholder="Enter amount"
+            value={amount}
+            onChange={handleChange}
+            step="200"
+          />
+        </div>
 
-        <p className="text-sm">Recipient</p>
-        <Input
-          id="receiver"
-          name="receiver"
-          type="text"
-          placeholder="Enter recipient"
-          value={receiver}
-          onChange={handleReceiverChange}
-        />
+        <div className="mb-4">
+          <Label htmlFor="receiver">Recipient</Label>
+          <Input
+            id="receiver"
+            name="receiver"
+            type="text"
+            placeholder="Enter recipient"
+            value={receiver}
+            onChange={handleReceiverChange}
+          />
+        </div>
 
-        <p className="text-sm">Payment Interval</p>
-        <Select
-          name="paymentInterval"
-          onValueChange={handlePaymentIntervalChange}
-          defaultValue=""
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select a payment interval" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Payment Intervals</SelectLabel>
-              <SelectItem value="daily">Daily</SelectItem>
-              <SelectItem value="weekly">Weekly</SelectItem>
-              <SelectItem value="monthly">Monthly</SelectItem>
-              <SelectItem value="quarterly">Quarterly</SelectItem>
-              <SelectItem value="annually">Annually</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <div className="mb-4">
+          <Label htmlFor="paymentInterval">Payment Interval</Label>
+          <Select
+            name="paymentInterval"
+            onValueChange={handlePaymentIntervalChange}
+            defaultValue=""
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a payment interval" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Payment Intervals</SelectLabel>
+                <SelectItem value="daily">Daily</SelectItem>
+                <SelectItem value="weekly">Weekly</SelectItem>
+                <SelectItem value="monthly">Monthly</SelectItem>
+                <SelectItem value="quarterly">Quarterly</SelectItem>
+                <SelectItem value="annually">Annually</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
 
         <Button
           type="submit"

@@ -7,7 +7,6 @@ import {
   account_transactions,
   account_recurrings,
 } from "../../api/transaction-service";
-import { valid_session } from "../../api/auth"
 
 interface Transaction {
   id: string;
@@ -62,13 +61,6 @@ export default function AccountContainer() {
     fetchTransactions(account_id);
     fetchRecurrings(account_id);
   };
-
-  const valid = async () => {
-    const response = await valid_session();
-  }
-  useEffect(() => {
-    valid()
-  }, []);
 
   return (
     <div>

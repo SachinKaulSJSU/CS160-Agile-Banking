@@ -12,8 +12,14 @@ export const enroll = async (data) => {
                 "username": data.username,
                 "email": data.email,
                 "password": data.password,
-                "first_name": data.first_name,
-                "last_name": data.last_name,
+                "first_name": data.firstName,
+                "last_name": data.lastName,
+                "address": {
+                    "street_address": data.streetAddress,
+                    "city": data.city,
+                    "state": data.state,
+                    "postal_code": data.zip
+                }
             }),
         }
         );
