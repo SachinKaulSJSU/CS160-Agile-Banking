@@ -2,6 +2,7 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 import Map from "./components/map";
 import CSS from "csstype";
+import React from "react";
 
 const titleStyle: CSS.Properties = {
   borderRadius: "5px",

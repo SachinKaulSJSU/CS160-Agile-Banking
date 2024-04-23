@@ -1,22 +1,24 @@
-'use client'
-import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react'
-import { login } from '../api/auth'
-import { useRouter } from 'next/navigation'
-
+"use client";
+import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
+import { login } from "../api/auth";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function LoginForm() {
-  const router = useRouter()
-  const [isSuccess, setIsSuccess] = useState(false)
+  const router = useRouter();
+  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (isSuccess){
-      router.push('/account')
+    if (isSuccess) {
+      router.push("/account");
     }
-  }, [isSuccess])
+  }, [isSuccess]);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
@@ -25,17 +27,40 @@ export default function LoginForm() {
     }));
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const unsuccessfulLogin = () => {
+    toast({
+      title: "Login unsuccessful",
+      description: "Please provide a valid username or password",
+      variant: "destructive",
+    });
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = login(formData);
-    console.log(response)
-    if (response != null){
+    try {
+      const response = await login(formData);
+      console.log(response)
+      if (response.error){
+        throw new Error("Bad Request: Invalid Credentials");
+      }
+      toast({
+        title: "Login Successful!",
+        description: "Valid credentials!",
+        variant: "constructive",
+      });
       setIsSuccess(true);
+    } catch (err) {
+      toast({
+        title: "Login unsuccessful",
+        description: "Please provide a valid username or password",
+        variant: "destructive",
+      });
     }
   };
 
   return (
     <form onSubmit={onSubmit}>
+      <Toaster />
       <div className="grid grid-cols-2 gap-5">
         <div className="col-span-full relative">
           <div className="relative">

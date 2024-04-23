@@ -48,3 +48,12 @@ pnpm dev
 bun dev
 ```
 
+.gitignore should look like this:
+
+```bash
+node_modules
+.env
+venv
+__pycache__
+```
+
