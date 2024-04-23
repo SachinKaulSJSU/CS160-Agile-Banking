@@ -100,3 +100,21 @@ export const get_account_by_id = async (id) => {
     console.log(err);
   }
 };
+
+export const get_user_by_account = async (id) => {
+  try {
+    console.log("running");
+    const res = await fetch(
+      `http://localhost:8000/api/get_user_by_account/${id}/`,
+      {
+        method: "GET",
+        credentials: 'include',
+      }
+    );
+    const responseData = await res.json();
+    console.log(responseData);
+    return responseData;
+  } catch (err) {
+    console.log(err);
+  }
+};

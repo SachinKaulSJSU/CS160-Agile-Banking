@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { get_accounts_by_user } from "../../../api/account-service";
 import { deposit } from "../../../api/transaction-service";
 import React, { useState, useEffect, ChangeEvent } from "react";
@@ -81,8 +82,8 @@ export default function DepositForm() {
       }
 
       const response = await deposit(depositAmount, accountID);
-      console.log(response.error)
-      if (response.error){
+      console.log(response.error);
+      if (response.error) {
         throw new Error("Backend error: Bad Request");
       }
 
@@ -110,51 +111,68 @@ export default function DepositForm() {
           <TabsTrigger value="transfer">Transfer Funds</TabsTrigger>
         </TabsList>
         <TabsContent value="deposit">
-          <div className="space-y-3 border border-zinc-200 rounded p-4">
-            <p className="text-sm">Select Account</p>
-            <Select
-              name="account"
-              onValueChange={handleAccountChange}
-              defaultValue=""
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a bank account" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Bank Accounts</SelectLabel>
-                  {accounts && accounts.length > 0 ? (
-                    accounts.map((account) =>
-                      account.status === false ? (
-                        <SelectItem key={account.id} value={account.id}>
-                          {account.type} {account.id} Balance: $
-                          {account.balance}
-                        </SelectItem>
-                      ) : (
-                        null
+          <div className=" border border-zinc-200 rounded p-4">
+            <div className="mb-4">
+              <Label htmlFor="account">Select Account</Label>
+              <Select
+                name="account"
+                onValueChange={handleAccountChange}
+                defaultValue=""
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a bank account" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Bank Accounts</SelectLabel>
+                    {accounts && accounts.length > 0 ? (
+                      accounts.map((account) =>
+                        account.status === false ? (
+                          <SelectItem key={account.id} value={account.id}>
+                            {account.type} {account.id} Balance: $
+                            {account.balance}
+                          </SelectItem>
+                        ) : null
                       )
-                    )
-                  ) : (
-                    <SelectItem value="noAccount" className="disabled" disabled>
-                      No open bank accounts
-                    </SelectItem>
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+                    ) : (
+                      <SelectItem
+                        value="noAccount"
+                        className="disabled"
+                        disabled
+                      >
+                        No open bank accounts
+                      </SelectItem>
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="amount">Deposit Amount</Label>
+              <Input
+                id="amount"
+                name="amount"
+                type="number"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={handleChange}
+                step="200"
+              />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="front">Front of Check</Label>
+              <Input id="picture" name="front" type="file" />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="back">Back of Check</Label>
+              <Input id="picture" name="back" type="file" />
+            </div>
 
-            <p className="text-sm">Deposit Amount</p>
-            <Input
-              id="amount"
-              name="amount"
-              type="number"
-              placeholder="Enter amount"
-              value={amount}
-              onChange={handleChange}
-              step="200"
-            />
-
-            <Button type="submit" onClick={submitDeposit} className="bg-blue-600 hover:bg-blue-800">
+            <Button
+              type="submit"
+              onClick={submitDeposit}
+              className="bg-blue-600 hover:bg-blue-800"
+            >
               Submit
             </Button>
           </div>

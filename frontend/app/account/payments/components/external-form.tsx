@@ -18,8 +18,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { external_payment } from "../../../api/transaction-service";
 import InternalForm from "./internal-form";
-import RecurringForm from "./recurring-form"
-
+import RecurringForm from "./recurring-form";
+import { Label } from "@/components/ui/label";
 
 interface BankAccount {
   id: string;
@@ -102,7 +102,11 @@ export default function ExternalForm() {
         throw new Error("Invalid payment amount.");
       }
 
-      const response = await external_payment(paymentAmount, accountID, receiver);
+      const response = await external_payment(
+        paymentAmount,
+        accountID,
+        receiver
+      );
       console.log(response.error);
       if (response.error) {
         throw new Error("Backend error: Bad Request");
@@ -133,59 +137,65 @@ export default function ExternalForm() {
           <TabsTrigger value="recurring">Recurring Payment</TabsTrigger>
         </TabsList>
         <TabsContent value="external">
-          <div className="space-y-3 border border-zinc-200 rounded p-4">
-            <p className="text-sm">Select Account</p>
-            <Select
-              name="account"
-              onValueChange={handleAccountChange}
-              defaultValue=""
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a bank account" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Bank Accounts</SelectLabel>
-                  {accounts && accounts.length > 0 ? (
-                    accounts.map((account) =>
-                      account.status === false ? (
-                        <SelectItem key={account.id} value={account.id}>
-                          {account.type} {account.id} Balance: $
-                          {account.balance}
-                        </SelectItem>
-                      ) : (
-                        null
+          <div className="border border-zinc-200 rounded p-4">
+            <div className="mb-4">
+              <Label htmlFor="account">Select Account</Label>
+              <Select
+                name="account"
+                onValueChange={handleAccountChange}
+                defaultValue=""
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a bank account" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Bank Accounts</SelectLabel>
+                    {accounts && accounts.length > 0 ? (
+                      accounts.map((account) =>
+                        account.status === false ? (
+                          <SelectItem key={account.id} value={account.id}>
+                            {account.type} {account.id} Balance: $
+                            {account.balance}
+                          </SelectItem>
+                        ) : null
                       )
-                    )
-                  ) : (
-                    <SelectItem value="noAccount" className="disabled" disabled>
-                      No open bank accounts
-                    </SelectItem>
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            <p className="text-sm">Payment Amount</p>
-            <Input
-              id="amount"
-              name="amount"
-              type="number"
-              placeholder="Enter amount"
-              value={amount}
-              onChange={handleChange}
-              step="200"
-            />
-
-            <p className="text-sm">External Recipient</p>
-            <Input
-              id="receiver"
-              name="receiver"
-              type="text"
-              placeholder="Enter external recipient"
-              value={receiver}
-              onChange={handleReceiverChange}
-            />
+                    ) : (
+                      <SelectItem
+                        value="noAccount"
+                        className="disabled"
+                        disabled
+                      >
+                        No open bank accounts
+                      </SelectItem>
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="amount">Payment Amount</Label>
+              <Input
+                id="amount"
+                name="amount"
+                type="number"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={handleChange}
+                step="200"
+              />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="receiver">External Recipient</Label>
+              <Input
+                id="receiver"
+                name="receiver"
+                type="text"
+                placeholder="Enter external recipient"
+                value={receiver}
+                onChange={handleReceiverChange}
+              />
+            </div>
 
             <Button
               type="submit"
@@ -197,10 +207,10 @@ export default function ExternalForm() {
           </div>
         </TabsContent>
         <TabsContent value="internal">
-            <InternalForm fetchAccounts={fetchAccounts} accounts={accounts}/>
+          <InternalForm fetchAccounts={fetchAccounts} accounts={accounts} />
         </TabsContent>
         <TabsContent value="recurring">
-            <RecurringForm fetchAccounts={fetchAccounts} accounts={accounts}/>
+          <RecurringForm fetchAccounts={fetchAccounts} accounts={accounts} />
         </TabsContent>
       </Tabs>
     </div>

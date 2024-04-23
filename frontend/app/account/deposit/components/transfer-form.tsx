@@ -15,6 +15,7 @@ import React, { useState, useEffect, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Label } from "@/components/ui/label";
 
 interface BankAccount {
   id: string;
@@ -97,8 +98,8 @@ export default function TransferForm({ fetchAccounts, accounts }: Props) {
 
       // Assuming recipientID is set somewhere in your code
       const response = await transfer(transferAmount, accountID, recipientID);
-      console.log(response.error)
-      if (response.error){
+      console.log(response.error);
+      if (response.error) {
         throw new Error("Backend error: " + response.error);
       }
 
@@ -123,82 +124,86 @@ export default function TransferForm({ fetchAccounts, accounts }: Props) {
   return (
     <div>
       <Toaster />
-      <div className="space-y-3 border border-zinc-200 rounded p-4">
-        <p className="text-sm">Select Sending Account</p>
-        <Select
-          name="account"
-          onValueChange={handleAccountChange}
-          defaultValue=""
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select sending account" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Bank Accounts</SelectLabel>
-              {accounts && accounts.length > 0 ? (
-                accounts.map((account) =>
-                  account.status === false ? (
-                    <SelectItem key={account.id} value={account.id}>
-                      {account.type} {account.id} Balance: ${account.balance}
-                    </SelectItem>
-                  ) : (
-                    null
+      <div className="border border-zinc-200 rounded p-4">
+        <div className="mb-4">
+        <Label htmlFor="account">Select Sending Account</Label>
+          <Select
+            name="account"
+            onValueChange={handleAccountChange}
+            defaultValue=""
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select sending account" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Bank Accounts</SelectLabel>
+                {accounts && accounts.length > 0 ? (
+                  accounts.map((account) =>
+                    account.status === false ? (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.type} {account.id} Balance: ${account.balance}
+                      </SelectItem>
+                    ) : null
                   )
-                )
-              ) : (
-                <SelectItem value="account_id" disabled>
-                  No open bank accounts
-                </SelectItem>
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-
-        <p className="text-sm">Select Recipient Account</p>
-        <Select
-          name="account"
-          onValueChange={handleRecipientChange}
-          defaultValue=""
-          disabled={accountID === ""}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select recipient account" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Bank Accounts</SelectLabel>
-              {accounts && accounts.length > 0 ? (
-                accounts.map((account) =>
-                  account.status === false && account.id !== accountID ? (
-                    <SelectItem key={account.id} value={account.id}>
-                      {account.type} {account.id} Balance: ${account.balance}
-                    </SelectItem>
-                  ) : (
-                    null
+                ) : (
+                  <SelectItem value="account_id" disabled>
+                    No open bank accounts
+                  </SelectItem>
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="mb-4">
+        <Label htmlFor="account">Select Recipient Account</Label>
+          <Select
+            name="account"
+            onValueChange={handleRecipientChange}
+            defaultValue=""
+            disabled={accountID === ""}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select recipient account" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Bank Accounts</SelectLabel>
+                {accounts && accounts.length > 0 ? (
+                  accounts.map((account) =>
+                    account.status === false && account.id !== accountID ? (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.type} {account.id} Balance: ${account.balance}
+                      </SelectItem>
+                    ) : null
                   )
-                )
-              ) : (
-                <SelectItem value="account_id" disabled>
-                  No open bank accounts
-                </SelectItem>
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+                ) : (
+                  <SelectItem value="account_id" disabled>
+                    No open bank accounts
+                  </SelectItem>
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="mb-4">
+        <Label htmlFor="amount">Transfer Amount</Label>
+          <Input
+            id="amount"
+            name="amount"
+            type="number"
+            placeholder="Enter amount"
+            value={amount}
+            onChange={handleChange}
+            step="200"
+          />
+        </div>
 
-        <p className="text-sm">Transfer Amount</p>
-        <Input
-          id="amount"
-          name="amount"
-          type="number"
-          placeholder="Enter amount"
-          value={amount}
-          onChange={handleChange}
-          step="200"
-        />
-
-        <Button type="submit" onClick={submitTransfer} className="bg-blue-600 hover:bg-blue-800">
+        <Button
+          type="submit"
+          onClick={submitTransfer}
+          className="bg-blue-600 hover:bg-blue-800"
+        >
           Submit
         </Button>
       </div>

@@ -17,7 +17,10 @@
         "micro": "concurrently \"npm run backend:auth\" \"npm run backend:user\" \"npm run backend:account\" \"npm run backend:transaction\" \"npm run frontend\"",
         "migrate:mac": "cd backend/services && python3 manage.py makemigrations && python3 manage.py migrate",
         "migrate:windows": "cd backend/services && python manage.py makemigrations && python manage.py migrate",
-        "dev": "concurrently \"npm run frontend\" \"npm run backend:mono\""
+        "dev": "concurrently \"npm run frontend\" \"npm run backend:mono\"",
+        "venv:windows": "venv/Scripts/activate",
+        "venv:mac": "source venv/bin/activate",
+        "manager": "cd backend/services && python manage.py createsuperuser"
     }, 
     "devDependencies": {
         "concurrently": "^8.2.2"

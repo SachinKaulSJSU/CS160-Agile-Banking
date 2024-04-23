@@ -57,12 +57,8 @@ export default function RecurringPayments({
   };
 
   return (
-    <Card className="flex-grow lg:flex-grow md:w-[500px] sm:w-flex">
-      <CardHeader>
-        <CardTitle>Recurring Payments</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className="lg:h-[296px] h-[250px] w-flex rounded-md border">
+
+        <ScrollArea className="flex flex-grow rounded-md border">
           <Accordion type="single" collapsible className="w-full">
             {recurrings && recurrings.length > 0 ? (
               recurrings
@@ -76,18 +72,18 @@ export default function RecurringPayments({
                   <AccordionItem
                     key={recurring.id}
                     value={recurring.id}
-                    className="w-full p-1 flex flex-col"
+                    className="p-1 flex flex-col"
                   >
                     <AccordionTrigger className="border rounded-md px-3 py-2 flex justify-between border-violet-500">
                       <div className="flex items-center">
-                        <div className="text-md sm:text-lg mr-2">
+                        <div className="text-md mr-2">
                           AB-{recurring.frequency.toUpperCase()} {recurring.id}
                         </div>
                         <div className="text-sm hidden md:block">
                           {formatSimpleTimestamp(recurring.timestamp)}
                         </div>
                       </div>
-                      <div className="p-2 text-md sm:text-lg border rounded-md">
+                      <div className="p-2 text-md border rounded-md">
                         ${recurring.amount}
                       </div>
                     </AccordionTrigger>
@@ -117,13 +113,11 @@ export default function RecurringPayments({
                   <div className="text-lg">NO RECURRING PAYMENTS</div>
                 </AccordionTrigger>
                 <AccordionContent className="p-4">
-                  Select an account or make a recurring payment
+                  This account has no recurring payments.
                 </AccordionContent>
               </AccordionItem>
             )}
           </Accordion>
         </ScrollArea>
-      </CardContent>
-    </Card>
   );
 }

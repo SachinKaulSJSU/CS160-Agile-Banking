@@ -24,6 +24,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { FaMoneyCheck, FaPiggyBank } from "react-icons/fa6";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label"
 
 
 interface CardInfo {
@@ -138,10 +139,10 @@ export default function AccountDialog({ refreshAccounts }: Refresh) {
         <DialogHeader>
           <DialogTitle>Open Bank Account</DialogTitle>
           <DialogDescription>
-            Select a Checking or Savings account
+            Select a Checking or Savings account and make an inital deposit.
           </DialogDescription>
         </DialogHeader>
-
+        <Label htmlFor="balance">Checking or Savings</Label>
         <div className="grid grid-flow-col">
           <SelectableCard
             title="Checking"
@@ -156,7 +157,7 @@ export default function AccountDialog({ refreshAccounts }: Refresh) {
         </div>
 
         <div>
-          <label className="text-sm" htmlFor="balance">Inital deposit must be at least $200.</label>
+          <Label htmlFor="balance">Inital deposit must be at least $200.</Label>
           <Input
             id="balance"
             name="balance"
