@@ -22,6 +22,16 @@ export default function EnrollForm() {
   });
   const { toast } = useToast();
 
+  function phoneChange(e: ChangeEvent<HTMLInputElement>){
+    handleInputChange(e);
+    onChange(e);
+  }
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    e.target.value = !x[2] ? x[1] : `(${x[1]}) ${x[2]}${x[3] ? '-' + x[3] : ''}`;
+  };
+  
+
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -203,15 +213,22 @@ export default function EnrollForm() {
               Phone Number
             </label>
             <div className="mt-2">
+              
               <input
                 autoComplete="phone"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="peer block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 id="phone"
                 name="phone"
                 value={formData.phone}
-                type="text"
-                onChange={onChange}
+                type="tel"
+                placeholder="(123) 456-7890"
+                // pattern="([0-9]{3})[0-9]{3}-[0-9]{4}" 
+                pattern="^\(\d{3}\) \d{3}-\d{4}$"
+                onChange={phoneChange}
               />
+              <p className="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
+                Please provide a valid phone number.
+              </p>
             </div>
           </div>
           <div className="sm:col-span-3">
