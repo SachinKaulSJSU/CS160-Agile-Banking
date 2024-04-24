@@ -1,10 +1,73 @@
 "use client";
 import { useState, FormEvent, ChangeEvent } from "react";
 import { enroll } from "../../api/user-service";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
+const states = [
+  { name: "Alabama", abbr: "AL" },
+  { name: "Alaska", abbr: "AK" },
+  { name: "Arizona", abbr: "AZ" },
+  { name: "Arkansas", abbr: "AR" },
+  { name: "California", abbr: "CA" },
+  { name: "Colorado", abbr: "CO" },
+  { name: "Connecticut", abbr: "CT" },
+  { name: "Delaware", abbr: "DE" },
+  { name: "Florida", abbr: "FL" },
+  { name: "Georgia", abbr: "GA" },
+  { name: "Hawaii", abbr: "HI" },
+  { name: "Idaho", abbr: "ID" },
+  { name: "Illinois", abbr: "IL" },
+  { name: "Indiana", abbr: "IN" },
+  { name: "Iowa", abbr: "IA" },
+  { name: "Kansas", abbr: "KS" },
+  { name: "Kentucky", abbr: "KY" },
+  { name: "Louisiana", abbr: "LA" },
+  { name: "Maine", abbr: "ME" },
+  { name: "Maryland", abbr: "MD" },
+  { name: "Massachusetts", abbr: "MA" },
+  { name: "Michigan", abbr: "MI" },
+  { name: "Minnesota", abbr: "MN" },
+  { name: "Mississippi", abbr: "MS" },
+  { name: "Missouri", abbr: "MO" },
+  { name: "Montana", abbr: "MT" },
+  { name: "Nebraska", abbr: "NE" },
+  { name: "Nevada", abbr: "NV" },
+  { name: "New Hampshire", abbr: "NH" },
+  { name: "New Jersey", abbr: "NJ" },
+  { name: "New Mexico", abbr: "NM" },
+  { name: "New York", abbr: "NY" },
+  { name: "North Carolina", abbr: "NC" },
+  { name: "North Dakota", abbr: "ND" },
+  { name: "Ohio", abbr: "OH" },
+  { name: "Oklahoma", abbr: "OK" },
+  { name: "Oregon", abbr: "OR" },
+  { name: "Pennsylvania", abbr: "PA" },
+  { name: "Rhode Island", abbr: "RI" },
+  { name: "South Carolina", abbr: "SC" },
+  { name: "South Dakota", abbr: "SD" },
+  { name: "Tennessee", abbr: "TN" },
+  { name: "Texas", abbr: "TX" },
+  { name: "Utah", abbr: "UT" },
+  { name: "Vermont", abbr: "VT" },
+  { name: "Virginia", abbr: "VA" },
+  { name: "Washington", abbr: "WA" },
+  { name: "West Virginia", abbr: "WV" },
+  { name: "Wisconsin", abbr: "WI" },
+  { name: "Wyoming", abbr: "WY" },
+];
 export default function EnrollForm() {
   const [formData, setFormData] = useState({
     username: "",
@@ -13,46 +76,121 @@ export default function EnrollForm() {
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
-    country: "",
     streetAddress: "",
     city: "",
     state: "",
     zip: "",
   });
   const { toast } = useToast();
+  const router = useRouter();
 
-  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
+  const onSelectState = (state: string) => {
+    console.log(state);
+    setFormData((prevState) => ({
+      ...prevState,
+      ["state"]: state,
+    }));
+  };
+
+  const onChangeLetters = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    // Use regular expression to check if the value contains only letters
+    const onlyLetters = /^[A-Za-z]+$/;
+    if (onlyLetters.test(value) || value === "") {
+      // Update the state only if the value is empty or contains only letters
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
+  const onChangeZip = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    // Use regular expression to remove non-numeric characters
+    const numericValue = value.replace(/\D/g, ""); // Remove non-numeric characters
+    // Update the state with the cleaned numeric value
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: numericValue,
+    }));
+  };
+
+  const isStrongPassword = (password: string) => {
+    // Check if the password is at least 8 characters long
+    if (password.length < 8) {
+      return false;
+    }
+
+    // Check if the password contains at least one capital letter
+    if (!/[A-Z]/.test(password)) {
+      return false;
+    }
+
+    // Check if the password contains at least 3 numbers
+    const numCount = (password.match(/\d/g) || []).length;
+    if (numCount < 3) {
+      return false;
+    }
+
+    // Check if the password contains at least one special character
+    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (!specialCharRegex.test(password)) {
+      return false;
+    }
+
+    return true;
+  };
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      console.error("Passwords do not match");
-    } else {
-      try {
-        const response = await enroll(formData);
-        if (response.success) {
-          redirect("/login");
-        } else {
-          toast({
-            title: "Login unsuccessful",
-            description: "Please provide a valid username or password",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        toast({
-          title: "Login unsuccessful",
-          description: "Please provide a valid username or password",
-          variant: "destructive",
-        });
+    try {
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error("Passwords do not match!");
       }
+
+      if (!isStrongPassword(formData.password)) {
+        throw new Error(
+          "Password must be at least 8 characters long, contain 3 numbers, include a special character, and have at least one capital letter."
+        );
+      }
+
+      const response = await enroll(formData);
+
+      if (response.username) {
+        throw new Error("Username already exists.");
+      }
+      if (response.address) {
+        throw new Error("Invalid address provided.");
+      }
+      if (response.email) {
+        throw new Error("Email already registered.");
+      }
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      if (response.message) {
+        toast({
+          title: "Success! User has been enrolled.",
+          description: "Valid information!",
+          variant: "constructive",
+        });
+        router.push('/login')
+      }
+    } catch (err) {
+      toast({
+        title: "Error! Enrollment unsuccessful.",
+        description: "Please review the form: " + err,
+        variant: "destructive",
+      });
     }
   };
 
@@ -62,68 +200,82 @@ export default function EnrollForm() {
       <div className="border-b border-gray-900/10 pb-12 px-10">
         <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div className="sm:col-span-4">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="username"
             >
               Username
-            </label>
+            </Label>
             <div className="mt-2">
-              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                <input
+              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 sm:max-w-md">
+                <Input
                   autoComplete="username"
-                  className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
                   id="username"
                   name="username"
                   value={formData.username}
                   type="text"
                   onChange={onChange}
+                  required
                 />
               </div>
             </div>
           </div>
 
           <div className="sm:col-span-3">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="password"
             >
               Password
-            </label>
+            </Label>
             <div className="mt-2">
-              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                <input
+              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 sm:max-w-md">
+                <Input
                   autoComplete="password"
-                  className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
                   id="password"
                   name="password"
                   value={formData.password}
                   type="password"
                   onChange={onChange}
+                  required
                 />
               </div>
+              {formData.password && !isStrongPassword(formData.password) && (
+                <p className="mt-2 text-pink-600 text-sm">
+                  Must be at least 8 characters long, contain 3 numbers, include
+                  a special character and one capital letter.
+                </p>
+              )}
             </div>
           </div>
 
           <div className="sm:col-span-3">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="confirmPassword"
             >
               Confirm Password
-            </label>
+            </Label>
             <div className="mt-2">
-              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                <input
+              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 sm:max-w-md">
+                <Input
                   autoComplete="confirmPassword"
-                  className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
                   id="confirmPassword"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   type="password"
                   onChange={onChange}
+                  required
                 />
               </div>
+              {formData.password !== formData.confirmPassword && (
+                <p className="mt-2 text-pink-600 text-sm">
+                  Passwords do not match.
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -136,179 +288,155 @@ export default function EnrollForm() {
         </p>
         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div className="sm:col-span-3">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="firstName"
             >
               First name
-            </label>
+            </Label>
             <div className="mt-2">
-              <input
+              <Input
                 autoComplete="given-name"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
                 id="firstName"
                 name="firstName"
                 value={formData.firstName}
                 type="text"
-                onChange={onChange}
+                pattern="[A-Za-z]+"
+                onChange={onChangeLetters}
+                required
               />
             </div>
           </div>
           <div className="sm:col-span-3">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="lastName"
             >
               Last name
-            </label>
+            </Label>
             <div className="mt-2">
-              <input
+              <Input
                 autoComplete="family-name"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
                 id="lastName"
                 name="lastName"
                 value={formData.lastName}
                 type="text"
-                onChange={onChange}
+                onChange={onChangeLetters}
+                required
               />
             </div>
           </div>
           <div className="sm:col-span-4">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="email"
             >
               Email address
-            </label>
+            </Label>
             <div className="mt-2">
-              <input
+              <Input
                 autoComplete="email"
-                className="peer block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="peer block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
                 id="email"
                 name="email"
                 value={formData.email}
                 type="email"
                 onChange={onChange}
+                required
               />
-              <p className="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
-                Please provide a valid email address.
-              </p>
-            </div>
-          </div>
-          <div className="sm:col-span-3">
-            <label
-              className="block text-sm font-medium leading-6 text-gray-900"
-              htmlFor="phone"
-            >
-              Phone Number
-            </label>
-            <div className="mt-2">
-              <input
-                autoComplete="phone"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                type="text"
-                onChange={onChange}
-              />
-            </div>
-          </div>
-          <div className="sm:col-span-3">
-            <label
-              className="block text-sm font-medium leading-6 text-gray-900"
-              htmlFor="country"
-            >
-              Country
-            </label>
-            <div className="mt-2">
-              <select
-                autoComplete="country-name"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                id="country"
-                value={formData.country}
-                name="country"
-                onChange={onChange}
-              >
-                <option>United States</option>
-                <option>Canada</option>
-                <option>Mexico</option>
-              </select>
+
+              {formData.email && (
+                <p className="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
+                  Please provide a valid email address.
+                </p>
+              )}
             </div>
           </div>
           <div className="col-span-full">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="streetAddress"
             >
               Street address
-            </label>
+            </Label>
             <div className="mt-2">
-              <input
+              <Input
                 autoComplete="street-address"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
                 id="streetAddress"
                 name="streetAddress"
                 value={formData.streetAddress}
                 type="text"
                 onChange={onChange}
+                required
               />
             </div>
           </div>
           <div className="sm:col-span-2 sm:col-start-1">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="city"
             >
               City
-            </label>
+            </Label>
             <div className="mt-2">
-              <input
+              <Input
                 autoComplete="address-level2"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
                 id="city"
                 name="city"
                 value={formData.city}
                 type="text"
-                onChange={onChange}
+                onChange={onChangeLetters}
+                required
               />
             </div>
           </div>
           <div className="sm:col-span-2">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="state"
             >
-              State / Province
-            </label>
+              State
+            </Label>
             <div className="mt-2">
-              <input
-                autoComplete="address-level1"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                id="state"
-                name="state"
-                value={formData.state}
-                type="text"
-                onChange={onChange}
-              />
+              <Select name="state" onValueChange={onSelectState} required>
+                <SelectTrigger className="rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>State</SelectLabel>
+                    {states.map((state) => (
+                      <SelectItem key={state.name} value={state.name}>
+                        {state.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="sm:col-span-2">
-            <label
+            <Label
               className="block text-sm font-medium leading-6 text-gray-900"
               htmlFor="zip"
             >
               ZIP / Postal code
-            </label>
+            </Label>
             <div className="mt-2">
-              <input
+              <Input
                 autoComplete="postal-code"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300  sm:text-sm sm:leading-6"
                 id="zip"
                 name="zip"
                 value={formData.zip}
                 type="text"
-                onChange={onChange}
+                onChange={onChangeZip}
+                maxLength={5}
+                required
               />
             </div>
           </div>

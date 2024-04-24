@@ -19,7 +19,7 @@ def register(request):
         email = serializer.validated_data.get('email')
 
         if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
-            return serializer.ValidationError({'error': 'Username or Email already taken.'})
+            return Response({'error': 'Username or Email already taken.'}, status=status.HTTP_400_BAD_REQUEST)
         
         serializer.save() # calls create method in serializer
         return Response({'message': 'Registration successful.'}, status=status.HTTP_201_CREATED)
