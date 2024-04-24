@@ -5,6 +5,7 @@ import {Loader} from '@googlemaps/js-api-loader';
 export default function Map() {
     const mapRef = React.useRef<HTMLDivElement>(null);
     const markers: google.maps.marker.AdvancedMarkerElement[] = [];
+    // google.maps.marker.AdvancedMarkerElement.gmpClickable = true;
 
     useEffect(() => {
 
@@ -14,7 +15,9 @@ export default function Map() {
                 version: 'beta'
             });
 
-            const {Map} = await loader.importLibrary('maps');
+            // const {Map} = await loader.importLibrary('maps');
+            const { Map, InfoWindow } = await loader.importLibrary("maps") as google.maps.MapsLibrary;
+
 
             const position = {
                 lat: 37.23300584574463,
@@ -34,6 +37,8 @@ export default function Map() {
 
             const { Place } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
             const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+            // const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+            const infoWindow = new InfoWindow();
 
             const request = {
                 textQuery: 'Chase atm',
@@ -119,6 +124,14 @@ export default function Map() {
                         map,
                         position: place.location,
                         title: place.displayName,
+                    });
+
+                    // Add a click listener for each marker, and set up the info window.
+                    markerView.addListener('click', ({ domEvent, latLng }) => {
+                        const { target } = domEvent;
+                        infoWindow.close();
+                        infoWindow.setContent(markerView.title);
+                        infoWindow.open(markerView.map, markerView);
                     });
                     
                     markers.push(markerView);
