@@ -23,10 +23,12 @@ export const enroll = async (data) => {
             }),
         }
         );
-        const responseData = await res.json()
+        const responseData = await res.json();
         console.log(responseData);
+        
+        return responseData
     } catch (err) {
         console.log(err);
+        return err; // Return the error if there's an exception
     }
-    return responseData
-}
+};
