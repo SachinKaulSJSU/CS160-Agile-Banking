@@ -145,10 +145,10 @@ export default function AccountContainer() {
         </p>
       </div> */}
           <div className="grid 2xl:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1 gap-4 mb-4">
-            <div className="flex items-center justify-center 2xl:col-span-1 lg:col-span-3 sm:col-span-1 ">
+            <div className="flex items-center justify-center 2xl:col-span-1 lg:col-span-2 sm:col-span-1 ">
               <Accounts selectedAccount={handleSelection} />
             </div>
-            <div className="flex items-center justify-center 2xl:col-span-1 lg:col-span-3 sm:col-span-1 ">
+            <div className="flex items-center justify-center 2xl:col-span-1 lg:col-span-1 sm:col-span-1 ">
               <RecurringPayments recurrings={recurrings} />
             </div>
             <div className="flex items-center justify-center 2xl:col-span-2 lg:col-span-3 sm:col-span-1">

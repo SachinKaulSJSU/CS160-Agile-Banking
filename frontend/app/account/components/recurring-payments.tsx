@@ -83,7 +83,7 @@ export default function RecurringPayments({
                         <div className="text-md sm:text-lg mr-2">
                           AB-{recurring.frequency.toUpperCase()} {recurring.id}
                         </div>
-                        <div className="text-sm hidden md:block">
+                        <div className="text-sm hidden xl:block">
                           {formatSimpleTimestamp(recurring.timestamp)}
                         </div>
                       </div>
