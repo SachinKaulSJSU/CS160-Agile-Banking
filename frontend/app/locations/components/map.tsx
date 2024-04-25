@@ -108,11 +108,11 @@ export default function Map() {
                         // Add a click listener for each marker, and set up the info window.
                         markerView.addListener('click', ({ domEvent, latLng }) => {
                             const { target } = domEvent;
-                            const input = markerView.position.toString;
-                            const latlngStr = input.split(",", 2);
+                            // const input = markerView.position.;
+                            // const latlngStr = input.split(",", 2);
                             const latlng = {
-                                lat: parseFloat(latlngStr[0]),
-                                lng: parseFloat(latlngStr[1]),
+                                lat: markerView.position?.lat,
+                                lng: markerView.position?.lng,
                             };
 
                             geocoder
