@@ -1,11 +1,11 @@
 'use client';
 import React, {useEffect, useMemo} from 'react';
 import {Loader} from '@googlemaps/js-api-loader';
+import { title } from 'process';
 
 export default function Map() {
     const mapRef = React.useRef<HTMLDivElement>(null);
     const markers: google.maps.marker.AdvancedMarkerElement[] = [];
-    // google.maps.marker.AdvancedMarkerElement.gmpClickable = true;
 
     useEffect(() => {
 
@@ -39,6 +39,7 @@ export default function Map() {
             const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
             // const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
             const infoWindow = new InfoWindow();
+            const geocoder = new google.maps.Geocoder();
 
             const request = {
                 textQuery: 'Chase atm',
@@ -79,7 +80,7 @@ export default function Map() {
 
                 const requestAC = {
                     textQuery: 'Chase atm',
-                    fields: ['displayName', 'location'],
+                    fields: ['displayName','formattedAddress', 'location'],
                     includedType: 'atm',
                     locationBias: place.location,
                     language: 'en-US',
@@ -100,7 +101,41 @@ export default function Map() {
                         const markerView = new AdvancedMarkerElement({
                             map,
                             position: place.location,
-                            title: place.displayName,
+                            title: place.formattedAddress,
+                        });
+
+
+                        // Add a click listener for each marker, and set up the info window.
+                        markerView.addListener('click', ({ domEvent, latLng }) => {
+                            const { target } = domEvent;
+                            const input = markerView.position.toString;
+                            const latlngStr = input.split(",", 2);
+                            const latlng = {
+                                lat: parseFloat(latlngStr[0]),
+                                lng: parseFloat(latlngStr[1]),
+                            };
+
+                            geocoder
+                                .geocode({ location: latlng })
+                                .then((response) => {
+                                if (response.results[0]) {
+                                    map.setZoom(11);
+
+                                    const marker = new google.maps.Marker({
+                                    position: latlng,
+                                    map: map,
+                                    });
+
+                                    infoWindow.setContent(response.results[0].formatted_address);
+                                    infoWindow.open(map, marker);
+                                } else {
+                                    window.alert("No results found");
+                                }
+                                })
+                                .catch((e) => window.alert("Geocoder failed due to: " + e));
+                            // infoWindow.close();
+                            // infoWindow.setContent(markerView.title);
+                            // infoWindow.open(markerView.map, markerView);
                         });
                         
                         markers.push(markerView);
@@ -126,12 +161,45 @@ export default function Map() {
                         title: place.displayName,
                     });
 
-                    // Add a click listener for each marker, and set up the info window.
-                    markerView.addListener('click', ({ domEvent, latLng }) => {
+                    // // Add a click listener for each marker, and set up the info window.
+                    // markerView.addListener('click', ({ domEvent, latLng }) => {
+                    //     const { target } = domEvent;
+                    //     infoWindow.close();
+                    //     infoWindow.setContent(markerView.title);
+                    //     infoWindow.open(markerView.map, markerView);
+                    // });
+
+                     // Add a click listener for each marker, and set up the info window.
+                     markerView.addListener('click', ({ domEvent, latLng }) => {
                         const { target } = domEvent;
-                        infoWindow.close();
-                        infoWindow.setContent(markerView.title);
-                        infoWindow.open(markerView.map, markerView);
+                        // const input = markerView.position.;
+                        // const latlngStr = input.split(",", 2);
+                        const latlng = {
+                            lat: markerView.position?.lat,
+                            lng: markerView.position?.lng,
+                        };
+
+                        geocoder
+                            .geocode({ location: latlng })
+                            .then((response) => {
+                            if (response.results[0]) {
+                                map.setZoom(11);
+
+                                const marker = new google.maps.Marker({
+                                position: latlng,
+                                map: map,
+                                });
+
+                                infoWindow.setContent(response.results[0].formatted_address);
+                                infoWindow.open(map, marker);
+                            } else {
+                                window.alert("No results found");
+                            }
+                            })
+                            .catch((e) => window.alert("Geocoder failed due to: " + e));
+                        // infoWindow.close();
+                        // infoWindow.setContent(markerView.title);
+                        // infoWindow.open(markerView.map, markerView);
                     });
                     
                     markers.push(markerView);
