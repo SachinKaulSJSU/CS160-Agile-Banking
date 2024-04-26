@@ -101,10 +101,10 @@ export default function EnrollForm() {
 
   const onChangeLetters = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // Use regular expression to check if the value contains only letters
-    const onlyLetters = /^[A-Za-z]+$/;
-    if (onlyLetters.test(value) || value === "") {
-      // Update the state only if the value is empty or contains only letters
+    // Use regular expression to check if the value contains only letters and spaces
+    const onlyLettersAndSpaces = /^[A-Za-z\s]+$/;
+    if (onlyLettersAndSpaces.test(value) || value === "") {
+      // Update the state only if the value is empty or contains only letters and spaces
       setFormData((prevState) => ({
         ...prevState,
         [name]: value,
