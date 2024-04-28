@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  db:
+    build: ./backend/MySQL
+    image: my-mysql-image
+    container_name: mysql-db
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: agile_bank
+      MYSQL_USER: team1
+      MYSQL_PASSWORD: team1
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+
+  backend:
+    build: ./backend/
+    container_name: django-app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/backend/MySQL
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      MYSQL_DATABASE: agile_bank
+      MYSQL_USER: team1
+      MYSQL_PASSWORD: team1
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306  
+
+  app: 
+    build: ./frontend/
+    container_name: next_app
+    command: npm run dev
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      MYSQL_DATABASE: agile_bank
+      MYSQL_USER: team1
+      MYSQL_PASSWORD: team1
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306    
+    
+
+volumes:
+  mysql_data: 

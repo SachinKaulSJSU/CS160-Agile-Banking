@@ -14,24 +14,27 @@ export async function middleware(request: NextRequest) {
 
   if (userToken) {
     try {
-      const response = await fetch("http://localhost:8000/api/valid_session/", {
+      const response = await fetch("http://backend:8000/api/valid_session/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Cookie: "sessionid=" + userToken,
+          Cookie: `sessionid=${userToken}`,
         },
       });
 
       const session = await response.json();
 
-      const managerResponse = await fetch("http://localhost:8000/api/valid_manager/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: "sessionid=" + userToken,
-        },
-      });
-      const manager = await managerResponse.json()
+      const managerResponse = await fetch(
+        "http://backend:8000/api/valid_manager/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `sessionid=${userToken}`,
+          },
+        }
+      );
+      const manager = await managerResponse.json();
 
       if (
         session.valid &&
@@ -41,17 +44,32 @@ export async function middleware(request: NextRequest) {
           request.nextUrl.pathname === "/")
       ) {
         return NextResponse.redirect(new URL("/account", request.url));
-      }
-      else if (!manager.valid && session.valid && request.nextUrl.pathname.startsWith("/manager/dashboard")){
+      } else if (
+        !manager.valid &&
+        session.valid &&
+        request.nextUrl.pathname.startsWith("/manager/dashboard")
+      ) {
         return NextResponse.redirect(new URL("/account", request.url));
-      } else if (manager.valid && request.nextUrl.pathname.startsWith("/account")){
-        return NextResponse.redirect(new URL("/manager/dashboard", request.url))
+      } else if (
+        manager.valid &&
+        request.nextUrl.pathname.startsWith("/account")
+      ) {
+        return NextResponse.redirect(
+          new URL("/manager/dashboard", request.url)
+        );
       }
-
     } catch (error) {
       // Handle error checking token validity
       console.error("Error checking token validity:", error);
-      return NextResponse.error();
+      // Delete session cookie
+      const deleteCookieResponse = NextResponse.redirect(
+        request.url.toString()
+      );
+      deleteCookieResponse.cookies.set("sessionid", "", {
+        maxAge: 0,
+        path: "/",
+      });
+      return deleteCookieResponse;
     }
   }
 }
