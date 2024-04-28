@@ -106,36 +106,27 @@ export default function Map() {
 
 
                         // Add a click listener for each marker, and set up the info window.
+                        //@ts-ignore
                         markerView.addListener('click', ({ domEvent, latLng }) => {
                             const { target } = domEvent;
-                            // const input = markerView.position.;
-                            // const latlngStr = input.split(",", 2);
                             const latlng = {
                                 lat: markerView.position?.lat,
                                 lng: markerView.position?.lng,
                             };
 
                             geocoder
+                                //@ts-ignore
                                 .geocode({ location: latlng })
                                 .then((response) => {
                                 if (response.results[0]) {
-                                    map.setZoom(11);
-
-                                    const marker = new google.maps.Marker({
-                                    position: latlng,
-                                    map: map,
-                                    });
 
                                     infoWindow.setContent(response.results[0].formatted_address);
-                                    infoWindow.open(map, marker);
+                                    infoWindow.open(map, markerView);
                                 } else {
                                     window.alert("No results found");
                                 }
                                 })
                                 .catch((e) => window.alert("Geocoder failed due to: " + e));
-                            // infoWindow.close();
-                            // infoWindow.setContent(markerView.title);
-                            // infoWindow.open(markerView.map, markerView);
                         });
                         
                         markers.push(markerView);
@@ -161,45 +152,29 @@ export default function Map() {
                         title: place.displayName,
                     });
 
-                    // // Add a click listener for each marker, and set up the info window.
-                    // markerView.addListener('click', ({ domEvent, latLng }) => {
-                    //     const { target } = domEvent;
-                    //     infoWindow.close();
-                    //     infoWindow.setContent(markerView.title);
-                    //     infoWindow.open(markerView.map, markerView);
-                    // });
-
                      // Add a click listener for each marker, and set up the info window.
+                     //@ts-ignore
                      markerView.addListener('click', ({ domEvent, latLng }) => {
                         const { target } = domEvent;
-                        // const input = markerView.position.;
-                        // const latlngStr = input.split(",", 2);
                         const latlng = {
                             lat: markerView.position?.lat,
                             lng: markerView.position?.lng,
                         };
 
                         geocoder
+                            //@ts-ignore
                             .geocode({ location: latlng })
                             .then((response) => {
                             if (response.results[0]) {
                                 map.setZoom(11);
 
-                                const marker = new google.maps.Marker({
-                                position: latlng,
-                                map: map,
-                                });
-
                                 infoWindow.setContent(response.results[0].formatted_address);
-                                infoWindow.open(map, marker);
+                                infoWindow.open(map, markerView);
                             } else {
                                 window.alert("No results found");
                             }
                             })
                             .catch((e) => window.alert("Geocoder failed due to: " + e));
-                        // infoWindow.close();
-                        // infoWindow.setContent(markerView.title);
-                        // infoWindow.open(markerView.map, markerView);
                     });
                     
                     markers.push(markerView);
