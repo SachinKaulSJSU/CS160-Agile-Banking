@@ -14,7 +14,7 @@ export default function TermsCard() {
         </div>
         <div className="w-100 text-center">
           <div className="lg:max-w-fit lg:mx-auto ms-auto justify-center">
-            <div className="p-7 sm:p-7 flex flex-col bg-white border border-violet-200 rounded-2xl shadow-lg shadow-indigo-400/40">
+            <div className="p-4 sm:p-7 flex flex-col bg-white border border-violet-200 rounded-2xl shadow-lg shadow-indigo-400/40">
               <div className="text-lg bold bg-clip-text bg-gradient-to-l from-blue-600 to-violet-500 text-transparent uppercase lg:px-20">
                 <p>At Agile Banking,</p><p className="font-bold text-2xl"> we will keep your money safe,</p> <p>even from yourself.</p>
               </div>
