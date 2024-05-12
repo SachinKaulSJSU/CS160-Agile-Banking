@@ -123,6 +123,20 @@ export default function EnrollForm() {
     }));
   };
 
+  const isValidZip = (zip: string) => {
+    if (zip.length != 5) {
+      return false;
+    }
+    return true;
+  };
+
+  const isValidEmail = (email: string) => {
+    // Checks for valid format of email address
+    var re =
+      /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+[^<>()\.,;:\s@\"]{2,})$/;
+    return re.test(email);
+  };
+
   const isStrongPassword = (password: string) => {
     // Check if the password is at least 8 characters long
     if (password.length < 8) {
@@ -163,6 +177,14 @@ export default function EnrollForm() {
         );
       }
 
+      if (!isValidZip(formData.zip)) {
+        throw new Error("ZIP code must be exactly 5 digits long.");
+      }
+
+      if (!isValidEmail(formData.email)) {
+        throw new Error("Email address must have valid format.");
+      }
+
       const response = await enroll(formData);
 
       if (response.username) {
@@ -183,7 +205,7 @@ export default function EnrollForm() {
           description: "Valid information!",
           variant: "constructive",
         });
-        router.push('/login')
+        router.push("/login");
       }
     } catch (err) {
       toast({
@@ -347,8 +369,8 @@ export default function EnrollForm() {
                 required
               />
 
-              {formData.email && (
-                <p className="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
+              {formData.email && !isValidEmail(formData.email) && (
+                <p className="mt-2 peer-invalid:visible text-pink-600 text-sm">
                   Please provide a valid email address.
                 </p>
               )}
@@ -438,6 +460,11 @@ export default function EnrollForm() {
                 maxLength={5}
                 required
               />
+              {formData.zip && !isValidZip(formData.zip) && (
+                <p className="mt-2 peer-invalid:visible text-pink-600 text-sm">
+                  Please provide a valid ZIP code.
+                </p>
+              )}
             </div>
           </div>
         </div>
